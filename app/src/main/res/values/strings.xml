@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Github User</string>
+    <string name="title_search">Github Users Search</string>
+    <string name="switch_layout">Switch Layout</string>
+</resources>
