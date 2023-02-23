@@ -1,27 +1,32 @@
 package com.example.githubuser.adapter
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.githubuser.DetailActivity
 import com.example.githubuser.R
 import com.example.githubuser.model.GithubUser
 
-class GithubUserAdapter(
+class GithubUserAdapterLinear(
     val githubUsers: List<GithubUser>,
-    val context: Context
-): RecyclerView.Adapter<GithubUserAdapter.GViewHolder>() {
+    val context: Context,
+): RecyclerView.Adapter<GithubUserAdapterLinear.GViewHolder>() {
     inner class GViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val ivAvatar: ImageView = view.findViewById(R.id.ivUser)
         val tvUsername: TextView = view.findViewById(R.id.tvUsername)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_github_user, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_github_user_linear, parent, false)
         return GViewHolder(view)
     }
 
@@ -32,6 +37,11 @@ class GithubUserAdapter(
     override fun onBindViewHolder(holder: GViewHolder, position: Int) {
         val user: GithubUser = githubUsers[position]
         holder.tvUsername.text = user.login
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("username", user.login)
+            (context as Activity).startActivity(intent)
+        }
         Glide.with(context)
             .load(user.avatarUrl)
             .into(holder.ivAvatar)

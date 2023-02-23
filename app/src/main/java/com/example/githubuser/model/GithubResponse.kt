@@ -32,3 +32,20 @@ data class GithubUser(
 	val avatarUrl: String,
 
 )
+data class GithubUserDetail(
+
+	@field:SerializedName("login")
+	val login: String,
+
+	@field:SerializedName("url")
+	val url: String,
+
+	@field:SerializedName("avatar_url")
+	val avatarUrl: String,
+
+	@field:SerializedName("name")
+	val name: String,
+
+	@field:SerializedName("bio")
+	val bio: String,
+): java.io.Serializable

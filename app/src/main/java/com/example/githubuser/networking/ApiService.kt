@@ -11,4 +11,9 @@ interface ApiService {
     fun searchUser(
         @Query("q") q: String
     ): Call<GithubSearchResponse>
+
+    @GET("users/{username}")
+    fun getUserDetail(
+        @Path("username") username : String
+    ): Call<GithubUserDetail>
 }

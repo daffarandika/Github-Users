@@ -2,25 +2,25 @@ package com.example.githubuser
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.githubuser.adapter.GithubUserAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.githubuser.adapter.GithubUserAdapterGrid
+import com.example.githubuser.adapter.GithubUserAdapterLinear
 import com.example.githubuser.databinding.ActivityMainBinding
-import com.example.githubuser.model.*
-import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.viewmodel.SearchViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var layoutManager: RecyclerView.LayoutManager
     private val searchViewModel by viewModels<SearchViewModel>()
 
     companion object {
@@ -32,58 +32,73 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.switch_layout) {
+            searchViewModel.setLayoutManager(!searchViewModel.isUsingLinearLayout.value!!)
+        }
+         setIcon(item)
+        return true
+    }
+
+    private fun setIcon(item: MenuItem) {
+        item.icon = if (!searchViewModel.isUsingLinearLayout.value!!)
+                        ContextCompat.getDrawable(this, R.drawable.ic_linear_layout)
+                    else
+                        ContextCompat.getDrawable(this, R.drawable.ic_grid_layout)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         showLoading(false)
-        val layoutManager = LinearLayoutManager(this)
-        binding.rv.layoutManager = layoutManager
 
         searchViewModel.githubUsers.observe(this) { users ->
-            binding.rv.adapter = GithubUserAdapter(users, this@MainActivity)
+            binding.rv.apply {
+                adapter = if (searchViewModel.isUsingLinearLayout.value!!) {
+                    GithubUserAdapterLinear(users, this@MainActivity)
+                } else {
+                    GithubUserAdapterGrid(users, this@MainActivity)
+                }
+            }
+            searchViewModel.isUsingLinearLayout.observe(this) {isUsing ->
+                layoutManager = getLayoutManager(isUsing)
+                binding.rv.layoutManager = this.layoutManager
+            }
+        }
+
+        searchViewModel.isUsingLinearLayout.observe(this) {isUsing ->
+            layoutManager = getLayoutManager(isUsing)
+            binding.rv.layoutManager = this.layoutManager
+            searchViewModel.githubUsers.observe(this) { users ->
+                binding.rv.apply {
+                    adapter = if (searchViewModel.isUsingLinearLayout.value!!) {
+                        GithubUserAdapterLinear(users, this@MainActivity)
+                    } else {
+                        GithubUserAdapterGrid(users, this@MainActivity)
+                    }
+                }
+            }
         }
 
         binding.svUsers.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-
             override fun onQueryTextSubmit(query: String): Boolean {
-                Toast.makeText(this@MainActivity, query, Toast.LENGTH_SHORT).show()
-                val githubUsers = mutableListOf<GithubUser>()
-                val client = ApiConfig.getApiService().searchUser(query)
-                client.enqueue(object: Callback<GithubSearchResponse>{
-
-                    override fun onResponse(
-                        call: Call<GithubSearchResponse>,
-                        response: Response<GithubSearchResponse>,
-                    ) {
-                        Log.d(TAG, "onQueryTextSubmit: $response")
-                        if (response.isSuccessful) {
-                            val responseBody = response.body()
-                            if (responseBody != null) {
-                                val users = responseBody.items
-                                for (user in users){
-                                    githubUsers.add(user)
-                                }
-                                binding.rv.adapter = GithubUserAdapter(githubUsers, this@MainActivity)
-                            } else {
-                                Log.e(TAG, "onResponse: ${response.message()}")
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<GithubSearchResponse>, t: Throwable) {
-                        Log.e(TAG, "onFailure: ${t.message}")
-                    }
-
-                })
+                searchViewModel.searchUser(query)
                 return false
             }
 
             override fun onQueryTextChange(query: String): Boolean {
                 return false
             }
-
         })
+    }
+
+    private fun getLayoutManager(isUsing: Boolean): RecyclerView.LayoutManager {
+        return if (isUsing) {
+            LinearLayoutManager(this@MainActivity)
+        } else {
+            GridLayoutManager(this@MainActivity, 3)
+        }
     }
 
 
@@ -91,5 +106,6 @@ class MainActivity : AppCompatActivity() {
         if (isLoading) binding.progressBar.visibility = View.VISIBLE
         else binding.progressBar.visibility = View.GONE
     }
+
 
 }

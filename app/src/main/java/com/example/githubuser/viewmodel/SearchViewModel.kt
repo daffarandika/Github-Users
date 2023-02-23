@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.githubuser.model.GithubSearchResponse
 import com.example.githubuser.model.GithubUser
 import com.example.githubuser.networking.ApiConfig
 import retrofit2.Call
@@ -18,10 +20,16 @@ class SearchViewModel: ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _searchQuery = MutableLiveData<String>()
+    val searchQuery: LiveData<String> = _searchQuery
+
+    private val _isUsingLinearLayout = MutableLiveData<Boolean>()
+    val isUsingLinearLayout: LiveData<Boolean> = _isUsingLinearLayout
+
     init {
+        _isUsingLinearLayout.value = true
         getInitialUsers()
     }
-
     private fun getInitialUsers() {
         val githubUsers = mutableListOf<GithubUser>()
         val client = ApiConfig.getApiService().getInitialUsers()
@@ -52,8 +60,44 @@ class SearchViewModel: ViewModel() {
 
         })
     }
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
 
+    fun setLayoutManager(isUsingLinearLayout: Boolean) {
+        _isUsingLinearLayout.value = isUsingLinearLayout
+    }
 
+    fun searchUser(query: String) {
+        val githubUsers = mutableListOf<GithubUser>()
+        val client = ApiConfig.getApiService().searchUser(query)
+        client.enqueue(object: Callback<GithubSearchResponse>{
+
+            override fun onResponse(
+                call: Call<GithubSearchResponse>,
+                response: Response<GithubSearchResponse>,
+            ) {
+                Log.d(TAG, "onQueryTextSubmit: $response")
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val users = responseBody.items
+                        for (user in users){
+                            githubUsers.add(user)
+                        }
+                        _githubUsers.value = githubUsers
+                    } else {
+                        Log.e(TAG, "onResponse: ${response.message()}")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<GithubSearchResponse>, t: Throwable) {
+                Log.e(TAG, "onFailure: ${t.message}")
+            }
+
+        })
+    }
     companion object {
         private const val TAG = "SearchViewModel"
     }
