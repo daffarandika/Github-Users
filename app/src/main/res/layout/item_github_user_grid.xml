@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/tvUsername"
-            android:background="@drawable/ic_launcher_background"
+            android:background="@drawable/baseline_person_24"
             />
         <TextView
             android:id="@+id/tvUsername"
