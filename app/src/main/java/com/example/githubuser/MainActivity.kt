@@ -51,7 +51,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        showLoading(false)
+
+        searchViewModel.isLoading.observe(this) {isLoading ->
+            showLoading(isLoading)
+        }
 
         searchViewModel.githubUsers.observe(this) { users ->
             binding.rv.apply {
@@ -106,6 +109,5 @@ class MainActivity : AppCompatActivity() {
         if (isLoading) binding.progressBar.visibility = View.VISIBLE
         else binding.progressBar.visibility = View.GONE
     }
-
 
 }

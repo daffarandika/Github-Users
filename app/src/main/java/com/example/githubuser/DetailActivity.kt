@@ -9,9 +9,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.githubuser.adapter.SectionsPageAdapter
 import com.example.githubuser.databinding.ActivityDetailBinding
+import com.example.githubuser.model.GithubUser
 import com.example.githubuser.model.GithubUserDetail
 import com.example.githubuser.networking.ApiConfig
-import com.example.githubuser.networking.ApiService
 import com.example.githubuser.viewmodel.DetailViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -40,29 +40,33 @@ class DetailActivity : AppCompatActivity() {
 
         val user = intent.extras!!.getString("username")
 
-        val client = ApiConfig.getApiService().getUserDetail(user!!)
-        client.enqueue(object: Callback<GithubUserDetail>{
+
+        val clientDetail = ApiConfig.getApiService().getUserDetail(user!!)
+        clientDetail.enqueue(object: Callback<GithubUserDetail>{
             override fun onResponse(
                 call: Call<GithubUserDetail>,
                 response: Response<GithubUserDetail>,
             ) {
                 val responseBody = response.body()
+                detailViewModel._isLoading.value = (true)
                 if (response.isSuccessful) {
                     if (responseBody != null) {
-                        detailViewModel.setGithubUser(responseBody)
+                        detailViewModel._githubUser.value = responseBody
                         setHeaderValue(responseBody)
+                        detailViewModel._isLoading.value = (false)
                     }
                     else Log.e(TAG, "onResponse: ${response.message()}")
                 } else Log.e(TAG, "onResponse: ${response.message()}")
             }
 
             override fun onFailure(call: Call<GithubUserDetail>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}", )
+                detailViewModel._isLoading.value = (false)
+                Log.e(TAG, "onFailure: ${t.message}")
             }
-
         })
 
-        val sectionsPageAdapter = SectionsPageAdapter(this)
+
+        val sectionsPageAdapter = SectionsPageAdapter(this, user)
         val viewPager = findViewById<ViewPager2>(R.id.vp2)
         viewPager.adapter = sectionsPageAdapter
         val tabs = findViewById<TabLayout>(R.id.tl)
@@ -77,6 +81,8 @@ class DetailActivity : AppCompatActivity() {
         binding.tvUsername.text = user.login
         binding.tvName.text = user.name
         binding.tvBio.text = user.bio
+        binding.tvFollowers.text = "Followers: ${user.followers}"
+        binding.tvFollowings.text = "Following: ${user.following}"
         Glide.with(this@DetailActivity)
             .load(user.avatarUrl)
             .into(binding.ivUser)

@@ -46,6 +46,12 @@ data class GithubUserDetail(
 	@field:SerializedName("name")
 	val name: String,
 
+	@field:SerializedName("followers")
+	val followers: Int,
+
+	@field:SerializedName("following")
+	val following: Int,
+
 	@field:SerializedName("bio")
 	val bio: String,
 ): java.io.Serializable

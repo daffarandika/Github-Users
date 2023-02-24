@@ -45,12 +45,11 @@ class SearchViewModel: ViewModel() {
                         for (user in responseBody) {
                             githubUsers.add(user)
                         }
-                        Log.e(TAG, "onResponse: $githubUsers", )
                     }
                     _githubUsers.value = githubUsers
                     _isLoading.value = (false)
                 }
-                else Log.e(TAG, "onResponseFail: ${response.message()}")
+                else Log.e(TAG, "onResponseFail: ${response.code()}")
             }
 
             override fun onFailure(call: Call<List<GithubUser>>, t: Throwable) {
@@ -60,10 +59,6 @@ class SearchViewModel: ViewModel() {
 
         })
     }
-    fun setSearchQuery(query: String) {
-        _searchQuery.value = query
-    }
-
     fun setLayoutManager(isUsingLinearLayout: Boolean) {
         _isUsingLinearLayout.value = isUsingLinearLayout
     }
@@ -77,7 +72,6 @@ class SearchViewModel: ViewModel() {
                 call: Call<GithubSearchResponse>,
                 response: Response<GithubSearchResponse>,
             ) {
-                Log.d(TAG, "onQueryTextSubmit: $response")
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
