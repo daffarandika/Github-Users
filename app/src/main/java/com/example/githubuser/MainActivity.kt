@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         if (item.itemId == R.id.switch_layout) {
             searchViewModel.setLayoutManager(!searchViewModel.isUsingLinearLayout.value!!)
         }
-         setIcon(item)
+        setIcon(item)
         return true
     }
 

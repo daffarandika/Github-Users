@@ -67,11 +67,11 @@ class SearchViewModel: ViewModel() {
         val githubUsers = mutableListOf<GithubUser>()
         val client = ApiConfig.getApiService().searchUser(query)
         client.enqueue(object: Callback<GithubSearchResponse>{
-
             override fun onResponse(
                 call: Call<GithubSearchResponse>,
                 response: Response<GithubSearchResponse>,
             ) {
+                _isLoading.value = (true)
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
@@ -80,6 +80,7 @@ class SearchViewModel: ViewModel() {
                             githubUsers.add(user)
                         }
                         _githubUsers.value = githubUsers
+                        _isLoading.value = (false)
                     } else {
                         Log.e(TAG, "onResponse: ${response.message()}")
                     }
@@ -87,6 +88,7 @@ class SearchViewModel: ViewModel() {
             }
 
             override fun onFailure(call: Call<GithubSearchResponse>, t: Throwable) {
+                _isLoading.value = (false)
                 Log.e(TAG, "onFailure: ${t.message}")
             }
 

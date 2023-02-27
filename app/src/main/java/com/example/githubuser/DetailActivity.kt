@@ -3,6 +3,7 @@ package com.example.githubuser
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.viewpager2.widget.ViewPager2
@@ -38,35 +39,18 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val user = intent.extras!!.getString("username")
+        val username = intent.extras!!.getString("username")
 
+        detailViewModel.getDetail(username!!)
 
-        val clientDetail = ApiConfig.getApiService().getUserDetail(user!!)
-        clientDetail.enqueue(object: Callback<GithubUserDetail>{
-            override fun onResponse(
-                call: Call<GithubUserDetail>,
-                response: Response<GithubUserDetail>,
-            ) {
-                val responseBody = response.body()
-                detailViewModel._isLoading.value = (true)
-                if (response.isSuccessful) {
-                    if (responseBody != null) {
-                        detailViewModel._githubUser.value = responseBody
-                        setHeaderValue(responseBody)
-                        detailViewModel._isLoading.value = (false)
-                    }
-                    else Log.e(TAG, "onResponse: ${response.message()}")
-                } else Log.e(TAG, "onResponse: ${response.message()}")
-            }
+        detailViewModel.githubUser.observe(this){ user ->
+            setHeaderValue(user)
+        }
+        detailViewModel.isLoading.observe(this){isLoading ->
+            showLoading(isLoading)
+        }
 
-            override fun onFailure(call: Call<GithubUserDetail>, t: Throwable) {
-                detailViewModel._isLoading.value = (false)
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
-
-
-        val sectionsPageAdapter = SectionsPageAdapter(this, user)
+        val sectionsPageAdapter = SectionsPageAdapter(this, username)
         val viewPager = findViewById<ViewPager2>(R.id.vp2)
         viewPager.adapter = sectionsPageAdapter
         val tabs = findViewById<TabLayout>(R.id.tl)
@@ -77,10 +61,17 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.hide()
     }
 
+    private fun showLoading(loading: Boolean) {
+        binding.pbDetail.visibility = if (loading) View.VISIBLE else View.GONE
+    }
+
     private fun setHeaderValue(user: GithubUserDetail) {
         binding.tvUsername.text = user.login
         binding.tvName.text = user.name
         binding.tvBio.text = user.bio
+        if (user.bio.isNullOrEmpty()) {
+            binding.tvBio.visibility = View.GONE
+        }
         binding.tvFollowers.text = "Followers: ${user.followers}"
         binding.tvFollowings.text = "Following: ${user.following}"
         Glide.with(this@DetailActivity)
