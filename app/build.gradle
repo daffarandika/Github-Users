@@ -3,11 +3,16 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
+
 android {
     namespace 'com.example.githubuser'
     compileSdk 33
 
     defaultConfig {
+        buildConfigField "String", "API_KEY", localProperties['apiKey']
         applicationId "com.example.githubuser"
         minSdk 24
         targetSdk 33

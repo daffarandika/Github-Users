@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <SearchView
         android:id="@+id/svUsers"
@@ -17,6 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/search_round_border"
+        android:backgroundTint="@null" />
     />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
@@ -41,8 +41,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:backgroundTint="@color/teal_200"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add" />
+        app:srcCompat="@drawable/ic_favorite" />
 </androidx.constraintlayout.widget.ConstraintLayout>

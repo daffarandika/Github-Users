@@ -1,21 +1,17 @@
-package com.example.githubuser
+package com.example.githubuser.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.githubuser.adapter.GithubUserAdapterLinear
+import com.example.githubuser.R
+import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.databinding.FragmentFollowBinding
 import com.example.githubuser.model.GithubUser
-import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.viewmodel.DetailViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class FollowFragment : Fragment() {
 
@@ -31,10 +27,6 @@ class FollowFragment : Fragment() {
     private var position: Int = -1
     private var username: String = ""
     private var followers: List<GithubUser> = listOf()
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +45,7 @@ class FollowFragment : Fragment() {
             detailViewModel.getFollowers(username)
             detailViewModel.githubFollowers.observe(viewLifecycleOwner){ followers ->
                 binding.rvFollowers.apply {
-                    adapter = GithubUserAdapterLinear(followers ,requireActivity())
+                    adapter = GithubUserAdapter(R.layout.item_github_user_linear, followers ,requireActivity())
                     layoutManager = LinearLayoutManager(requireActivity())
                 }
             }
@@ -61,13 +53,13 @@ class FollowFragment : Fragment() {
             detailViewModel.getFollowing(username)
             detailViewModel.githubFollowings.observe(viewLifecycleOwner){ followings ->
                 binding.rvFollowers.apply {
-                    adapter = GithubUserAdapterLinear(followings ,requireActivity())
+                    adapter = GithubUserAdapter(R.layout.item_github_user_linear, followings ,requireActivity())
                     layoutManager = LinearLayoutManager(requireActivity())
                 }
             }
         }
         binding.rvFollowers.apply {
-            adapter = GithubUserAdapterLinear(followers, requireActivity())
+            adapter = GithubUserAdapter(R.layout.item_github_user_linear, followers ,requireActivity())
             layoutManager = LinearLayoutManager(requireActivity())
         }
         return binding.root

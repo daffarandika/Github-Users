@@ -5,4 +5,8 @@
         android:title="@string/switch_layout"
         app:showAsAction="always"
         android:icon="@drawable/ic_grid_layout"/>
+    <item android:id="@+id/setting"
+        android:title="@string/setting"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_setting" />
 </menu>

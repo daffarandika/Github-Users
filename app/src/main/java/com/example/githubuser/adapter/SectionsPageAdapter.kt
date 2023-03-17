@@ -3,10 +3,8 @@ package com.example.githubuser.adapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.githubuser.FollowFragment
-import com.example.githubuser.viewmodel.DetailViewModel
+import com.example.githubuser.fragment.FollowFragment
 
 class SectionsPageAdapter(activity: AppCompatActivity, private val username: String): FragmentStateAdapter(activity) {
 

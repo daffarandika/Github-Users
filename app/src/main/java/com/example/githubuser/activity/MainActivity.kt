@@ -1,4 +1,4 @@
-package com.example.githubuser
+package com.example.githubuser.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,9 +11,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
-import com.example.githubuser.adapter.GithubUserAdapterLinear
 import com.example.githubuser.databinding.ActivityMainBinding
+import com.example.githubuser.fragment.SettingDialogFragment
 import com.example.githubuser.viewmodel.SearchViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -34,8 +35,11 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.switch_layout) {
             searchViewModel.setLayoutManager(!searchViewModel.isUsingLinearLayout.value!!)
+            setIcon(item)
         }
-        setIcon(item)
+        if (item.itemId == R.id.setting) {
+            SettingDialogFragment().show(supportFragmentManager, SettingDialogFragment::class.java.simpleName)
+        }
         return true
     }
 
