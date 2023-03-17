@@ -3,30 +3,29 @@ package com.example.githubuser.adapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubuser.DetailActivity
 import com.example.githubuser.R
 import com.example.githubuser.model.GithubUser
 
-class GithubUserAdapterLinear(
+class GithubUserAdapter(
+    val layoutId: Int,
     val githubUsers: List<GithubUser>,
-    val context: Context,
-): RecyclerView.Adapter<GithubUserAdapterLinear.GViewHolder>() {
+    val context: Context
+): RecyclerView.Adapter<GithubUserAdapter.GViewHolder>() {
     inner class GViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val ivAvatar: ImageView = view.findViewById(R.id.ivUser)
         val tvUsername: TextView = view.findViewById(R.id.tvUsername)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_github_user_linear, parent, false)
+        val view = LayoutInflater.from(context).inflate(layoutId, parent, false)
         return GViewHolder(view)
     }
 

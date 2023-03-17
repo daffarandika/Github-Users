@@ -6,13 +6,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.githubuser.adapter.GithubUserAdapterGrid
+import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.adapter.GithubUserAdapterLinear
 import com.example.githubuser.databinding.ActivityMainBinding
 import com.example.githubuser.viewmodel.SearchViewModel
@@ -59,9 +58,9 @@ class MainActivity : AppCompatActivity() {
         searchViewModel.githubUsers.observe(this) { users ->
             binding.rv.apply {
                 adapter = if (searchViewModel.isUsingLinearLayout.value!!) {
-                    GithubUserAdapterLinear(users, this@MainActivity)
+                    GithubUserAdapter(R.layout.item_github_user_linear, users, this@MainActivity)
                 } else {
-                    GithubUserAdapterGrid(users, this@MainActivity)
+                    GithubUserAdapter(R.layout.item_github_user_grid, users, this@MainActivity)
                 }
             }
             searchViewModel.isUsingLinearLayout.observe(this) {isUsing ->
@@ -76,9 +75,9 @@ class MainActivity : AppCompatActivity() {
             searchViewModel.githubUsers.observe(this) { users ->
                 binding.rv.apply {
                     adapter = if (searchViewModel.isUsingLinearLayout.value!!) {
-                        GithubUserAdapterLinear(users, this@MainActivity)
+                        GithubUserAdapter(R.layout.item_github_user_linear, users, this@MainActivity)
                     } else {
-                        GithubUserAdapterGrid(users, this@MainActivity)
+                        GithubUserAdapter(R.layout.item_github_user_grid, users, this@MainActivity)
                     }
                 }
             }
