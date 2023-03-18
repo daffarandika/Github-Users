@@ -23,6 +23,7 @@ import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.databinding.ActivityMainBinding
 import com.example.githubuser.fragment.SettingDialogFragment
 import com.example.githubuser.preferences.SettingPreference
+import com.example.githubuser.viewmodel.FavoriteUserViewModel
 import com.example.githubuser.viewmodel.MainViewModel
 import com.example.githubuser.viewmodel.SearchViewModel
 import com.example.githubuser.viewmodel.ViewModelFactory
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private val searchViewModel by viewModels<SearchViewModel>()
+    private val favoriteUserViewModel by viewModels<FavoriteUserViewModel>()
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_menu, menu)
@@ -69,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         val mainViewModel = ViewModelProvider(this, ViewModelFactory(pref)).get(
             MainViewModel::class.java
         )
+
         mainViewModel.getThemeSetting().observe(this) {isDarkMode ->
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -81,12 +84,24 @@ class MainActivity : AppCompatActivity() {
             showLoading(isLoading)
         }
 
+//        favoriteUserViewModel.getFavoriteUsers().observe(this) {favUsers ->
+//
+//        }
+
         searchViewModel.githubUsers.observe(this) { users ->
             binding.rv.apply {
                 adapter = if (searchViewModel.isUsingLinearLayout.value!!) {
-                    GithubUserAdapter(R.layout.item_github_user_linear, users, this@MainActivity)
+                    GithubUserAdapter(
+                        R.layout.item_github_user_linear,
+                        users,
+                        this@MainActivity
+                    )
                 } else {
-                    GithubUserAdapter(R.layout.item_github_user_grid, users, this@MainActivity)
+                    GithubUserAdapter(
+                        R.layout.item_github_user_grid,
+                        users,
+                        this@MainActivity
+                    )
                 }
             }
             searchViewModel.isUsingLinearLayout.observe(this) {isUsing ->

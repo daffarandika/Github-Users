@@ -1,4 +1,8 @@
 package com.example.githubuser.viewmodel
 
-class FavoriteUserViewModel {
+import androidx.lifecycle.ViewModel
+import com.example.githubuser.database.FavoriteUserRepository
+
+class FavoriteUserViewModel(private val repo: FavoriteUserRepository): ViewModel() {
+    fun getFavoriteUsers() = repo.getFavoriteUsers()
 }
