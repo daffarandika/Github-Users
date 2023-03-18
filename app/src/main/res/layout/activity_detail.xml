@@ -17,10 +17,9 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:backgroundTint="@color/gh_blue"
             app:expandedTitleTextColor="@color/black"
             app:collapsedTitleTextColor="@color/black"
-            app:contentScrim="@color/gh_blue"
+            app:contentScrim="@color/item_background"
             app:titleEnabled="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,9 +44,17 @@
                     android:src="@drawable/baseline_person_24"
                     app:layout_constraintBottom_toTopOf="@id/tvName"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearanceOverlay="@style/roundedImage" />
+                <ImageButton
+                    android:id="@+id/ibHeart"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/ic_favorite_border_large"
+                    android:background="@null"
+                    android:layout_margin="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvName"
@@ -59,7 +66,6 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/tvUsername"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ivUser" />
 
                 <TextView
@@ -71,7 +77,6 @@
                     android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@id/tvBio"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvName" />
 
                 <TextView
@@ -84,7 +89,6 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@id/tvFollowers"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvUsername" />
 
                 <TextView
@@ -97,7 +101,6 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@id/tvFollowings"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBio" />
 
                 <TextView
@@ -110,7 +113,6 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvFollowers" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
