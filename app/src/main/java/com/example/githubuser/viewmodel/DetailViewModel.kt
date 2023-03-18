@@ -35,7 +35,7 @@ class DetailViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null){
-                        _githubFollowers.value = responseBody
+                        _githubFollowers.value = responseBody!!
                         _isLoading.value = false
                     } else Log.e(TAG, "onResponse: ${response.message()}")
                 } else Log.e(TAG, "onResponse: ${response.message()}")
@@ -59,7 +59,7 @@ class DetailViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null){
-                        _githubFollowings.value = responseBody
+                        _githubFollowings.value = responseBody!!
                         _isLoading.value = false
                     } else Log.e(TAG, "onResponse: ${response.message()}")
                 } else Log.e(TAG, "onResponse: ${response.message()}")
@@ -73,7 +73,7 @@ class DetailViewModel: ViewModel() {
     }
 
     fun getDetail(username: String) {
-        val clientDetail = ApiConfig.getApiService().getUserDetail(username!!)
+        val clientDetail = ApiConfig.getApiService().getUserDetail(username)
         clientDetail.enqueue(object: Callback<GithubUserDetail>{
             override fun onResponse(
                 call: Call<GithubUserDetail>,
@@ -83,7 +83,7 @@ class DetailViewModel: ViewModel() {
                 _isLoading.value = (true)
                 if (response.isSuccessful) {
                     if (responseBody != null) {
-                        _githubUser.value = responseBody
+                        _githubUser.value = responseBody!!
                         _isLoading.value = (false)
                     }
                     else Log.e(TAG, "onResponse: ${response.message()}")

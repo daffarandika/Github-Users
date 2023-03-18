@@ -12,6 +12,8 @@
     <color name="gh_purple">#6e5494</color>
     <color name="gh_blue">#3571D4</color>
     <color name="text_color">@color/gh_black</color>
-    <color name="window_background">@color/gh_white</color>
+    <color name="window_background">@color/white</color>
     <color name="item_background">@color/gh_black</color>
+    <color name="toolbar_background">@color/window_background</color>
+    <color name="setting_text_color">@color/gh_white</color>
 </resources>

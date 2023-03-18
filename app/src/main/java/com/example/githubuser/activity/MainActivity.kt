@@ -1,5 +1,7 @@
 package com.example.githubuser.activity
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -7,7 +9,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,17 +22,17 @@ import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.databinding.ActivityMainBinding
 import com.example.githubuser.fragment.SettingDialogFragment
+import com.example.githubuser.preferences.SettingPreference
+import com.example.githubuser.viewmodel.MainViewModel
 import com.example.githubuser.viewmodel.SearchViewModel
+import com.example.githubuser.viewmodel.ViewModelFactory
 
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private val searchViewModel by viewModels<SearchViewModel>()
-
-    companion object {
-        private const val TAG = "MainActivity"
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_menu, menu)
@@ -38,7 +45,9 @@ class MainActivity : AppCompatActivity() {
             setIcon(item)
         }
         if (item.itemId == R.id.setting) {
-            SettingDialogFragment().show(supportFragmentManager, SettingDialogFragment::class.java.simpleName)
+            Intent(this@MainActivity, SettingActivity::class.java).apply {
+                startActivity(this)
+            }
         }
         return true
     }
@@ -54,6 +63,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val pref = SettingPreference.getInstance(dataStore)
+
+        val mainViewModel = ViewModelProvider(this, ViewModelFactory(pref)).get(
+            MainViewModel::class.java
+        )
+        mainViewModel.getThemeSetting().observe(this) {isDarkMode ->
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         searchViewModel.isLoading.observe(this) {isLoading ->
             showLoading(isLoading)
@@ -97,6 +119,7 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
         })
+
     }
 
     private fun getLayoutManager(isUsing: Boolean): RecyclerView.LayoutManager {
@@ -106,6 +129,7 @@ class MainActivity : AppCompatActivity() {
             GridLayoutManager(this@MainActivity, 3)
         }
     }
+
 
 
     private fun showLoading(isLoading: Boolean){

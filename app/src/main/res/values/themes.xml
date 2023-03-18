@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.Bridge">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/gh_black</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/gh_black</item>
+        <item name="actionMenuTextColor">@color/gh_black</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:textColor">@color/text_color</item>
@@ -13,7 +15,8 @@
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:backgroundTint">@color/item_background</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/gh_black</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
     </style>
     <style name="roundedImage">

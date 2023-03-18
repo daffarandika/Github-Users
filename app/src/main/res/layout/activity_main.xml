@@ -15,9 +15,8 @@
         app:layout_constraintBottom_toTopOf="@id/rv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/search_round_border"
-        android:backgroundTint="@null" />
-    />
+        android:backgroundTint="@null"
+        android:background="@drawable/search_round_border" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="0dp"
@@ -41,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:backgroundTint="@color/teal_200"
+        android:backgroundTint="@color/gh_blue"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
