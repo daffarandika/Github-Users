@@ -26,6 +26,7 @@ import com.example.githubuser.preferences.SettingPreference
 import com.example.githubuser.viewmodel.MainViewModel
 import com.example.githubuser.viewmodel.SearchViewModel
 import com.example.githubuser.viewmodel.ViewModelFactory
+import com.example.githubuser.viewmodel.createFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 class MainActivity : AppCompatActivity() {
@@ -65,10 +66,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val pref = SettingPreference.getInstance(dataStore)
+        val factory = MainViewModel(pref).createFactory()
+        val mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
 
-        val mainViewModel = ViewModelProvider(this, ViewModelFactory(pref)).get(
-            MainViewModel::class.java
-        )
         mainViewModel.getThemeSetting().observe(this) {isDarkMode ->
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -119,6 +119,15 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
         })
+
+        binding.fab.setOnClickListener {
+            Intent(
+                this@MainActivity,
+                FavoriteUserActivity::class.java
+            ).run {
+                startActivity(this)
+            }
+        }
 
     }
 

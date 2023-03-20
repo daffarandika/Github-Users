@@ -13,6 +13,7 @@ import com.example.githubuser.R
 import com.example.githubuser.preferences.SettingPreference
 import com.example.githubuser.viewmodel.MainViewModel
 import com.example.githubuser.viewmodel.ViewModelFactory
+import com.example.githubuser.viewmodel.createFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "setting")
 class SettingActivity : AppCompatActivity() {
@@ -22,9 +23,8 @@ class SettingActivity : AppCompatActivity() {
         val switch = findViewById<SwitchCompat>(R.id.switchCompat)
 
         val pref = SettingPreference.getInstance(dataStore)
-        val mainViewModel = ViewModelProvider(this, ViewModelFactory(pref)).get(
-            MainViewModel::class.java
-        )
+        val factory = MainViewModel(pref).createFactory()
+        val mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
         mainViewModel.getThemeSetting().observe(this) {isDarkMode ->
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
