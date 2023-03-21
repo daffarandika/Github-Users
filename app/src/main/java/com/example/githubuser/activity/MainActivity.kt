@@ -121,12 +121,11 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.fab.setOnClickListener {
-            Intent(
+            val intent = Intent(
                 this@MainActivity,
                 FavoriteUserActivity::class.java
-            ).run {
-                startActivity(this)
-            }
+            )
+            startActivity(intent)
         }
 
     }

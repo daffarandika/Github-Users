@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".FavoriteUserActivity"
+            android:name=".activity.FavoriteUserActivity"
             android:exported="false" />
         <activity
             android:name=".activity.SettingActivity"

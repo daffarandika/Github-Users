@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class FavoriteUser (
     @PrimaryKey(autoGenerate = false)
-    val login: String? = null,
-    val avatarUrl: String? = null
+    val login: String,
+    val avatarUrl: String
 )

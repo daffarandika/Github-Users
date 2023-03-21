@@ -16,7 +16,7 @@ interface FavoriteUserDao {
     @Delete
     suspend fun removeFavoriteUser(fav: FavoriteUser)
 
-    @Query("select if exists (select * from favoriteUser where login = :login)")
+    @Query("select exists (select * from favoriteUser where login = :login)")
     fun isUserFavorite(login: String): Boolean
 
     @Query("select * from favoriteUser")

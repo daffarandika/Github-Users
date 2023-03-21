@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubuser.activity.DetailActivity
 import com.example.githubuser.R
+import com.example.githubuser.database.FavoriteUserDatabase
+import com.example.githubuser.database.FavoriteUserRepository
+import com.example.githubuser.model.FavoriteUser
 import com.example.githubuser.model.GithubUser
+import kotlinx.coroutines.runBlocking
 
 class GithubUserAdapter(
     val layoutId: Int,
@@ -45,10 +49,18 @@ class GithubUserAdapter(
             (context as Activity).startActivity(intent)
         }
         holder.ibHeart.setOnClickListener {
+            addFavoriteUser(FavoriteUser(
+                login = user.login,
+                avatarUrl = user.avatarUrl
+            ))
             Toast.makeText(context, "hai", Toast.LENGTH_SHORT).show()
         }
         Glide.with(context)
             .load(user.avatarUrl)
             .into(holder.ivAvatar)
+    }
+    private fun addFavoriteUser(favoriteUser: FavoriteUser) = runBlocking{
+        val repo = FavoriteUserRepository(context)
+        repo.setFavoriteUser(favoriteUser)
     }
 }
