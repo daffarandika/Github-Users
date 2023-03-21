@@ -28,7 +28,6 @@ class GithubUserAdapter(
     inner class GViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val ivAvatar: ImageView = view.findViewById(R.id.ivUser)
         val tvUsername: TextView = view.findViewById(R.id.tvUsername)
-        val ibHeart: ImageButton = view.findViewById(R.id.ibHeart)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
@@ -48,19 +47,8 @@ class GithubUserAdapter(
             intent.putExtra("username", user.login)
             (context as Activity).startActivity(intent)
         }
-        holder.ibHeart.setOnClickListener {
-            addFavoriteUser(FavoriteUser(
-                login = user.login,
-                avatarUrl = user.avatarUrl
-            ))
-            Toast.makeText(context, "hai", Toast.LENGTH_SHORT).show()
-        }
         Glide.with(context)
             .load(user.avatarUrl)
             .into(holder.ivAvatar)
-    }
-    private fun addFavoriteUser(favoriteUser: FavoriteUser) = runBlocking{
-        val repo = FavoriteUserRepository(context)
-        repo.setFavoriteUser(favoriteUser)
     }
 }

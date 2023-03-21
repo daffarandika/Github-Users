@@ -21,11 +21,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.databinding.ActivityMainBinding
-import com.example.githubuser.fragment.SettingDialogFragment
 import com.example.githubuser.preferences.SettingPreference
 import com.example.githubuser.viewmodel.MainViewModel
 import com.example.githubuser.viewmodel.SearchViewModel
-import com.example.githubuser.viewmodel.ViewModelFactory
 import com.example.githubuser.viewmodel.createFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
