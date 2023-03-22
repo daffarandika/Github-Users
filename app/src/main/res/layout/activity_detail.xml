@@ -28,6 +28,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivUser"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@null"
+                    android:src="@drawable/ic_favorite_border_large" />
+
                 <ProgressBar
                     android:id="@+id/pbDetail"
                     android:layout_width="match_parent"
