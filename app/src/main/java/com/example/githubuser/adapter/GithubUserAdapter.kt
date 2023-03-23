@@ -3,6 +3,7 @@ package com.example.githubuser.adapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.text.BoringLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +18,10 @@ import com.example.githubuser.R
 import com.example.githubuser.model.GithubUser
 
 class GithubUserAdapter(
-    val layoutId: Int,
     val githubUsers: List<GithubUser>,
     val context: Context
 ): RecyclerView.Adapter<GithubUserAdapter.GViewHolder>() {
+
     inner class GViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val ivAvatar: ImageView = view.findViewById(R.id.ivUser)
         val tvUsername: TextView = view.findViewById(R.id.tvUsername)
@@ -28,8 +29,7 @@ class GithubUserAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
-        val view = LayoutInflater.from(context).inflate(layoutId, parent, false)
-        return GViewHolder(view)
+        return GViewHolder(LayoutInflater.from(context).inflate(R.layout.item_github_user_grid, parent, false))
     }
 
     override fun getItemCount(): Int {

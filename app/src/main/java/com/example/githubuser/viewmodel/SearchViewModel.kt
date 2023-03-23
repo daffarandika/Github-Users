@@ -1,21 +1,21 @@
 package com.example.githubuser.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.*
 import com.example.githubuser.model.GithubSearchResponse
 import com.example.githubuser.model.GithubUser
 import com.example.githubuser.networking.ApiConfig
+import com.example.githubuser.networking.ApiService
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.example.githubuser.model.Result as Result
 
 class SearchViewModel: ViewModel() {
     
-    private val _githubUsers = MutableLiveData<List<GithubUser>>()
-    val githubUsers: LiveData<List<GithubUser>> = _githubUsers
+    private val _githubUsers = MutableLiveData<Result<List<GithubUser>>>()
+    val githubUsers: LiveData<Result<List<GithubUser>>> = _githubUsers
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -30,69 +30,28 @@ class SearchViewModel: ViewModel() {
         _isUsingLinearLayout.value = true
         getInitialUsers()
     }
-    private fun getInitialUsers() {
-        val githubUsers = mutableListOf<GithubUser>()
-        val client = ApiConfig.getApiService().getInitialUsers()
-        client.enqueue(object: Callback<List<GithubUser>> {
-            override fun onResponse(
-                call: Call<List<GithubUser>>,
-                response: Response<List<GithubUser>>,
-            ) {
-                _isLoading.value = (true)
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        for (user in responseBody) {
-                            githubUsers.add(user)
-                        }
-                    }
-                    _githubUsers.value = githubUsers
-                    _isLoading.value = (false)
-                }
-                else Log.e(TAG, "onResponseFail: ${response.code()}")
+    fun getInitialUsers(){
+        viewModelScope.launch {
+            try {
+                _githubUsers.value = Result.Success(ApiConfig.getApiService().getInitialUsers())
+            } catch (e: Exception) {
+                _githubUsers.value = Result.Error(e.message.toString())
             }
-
-            override fun onFailure(call: Call<List<GithubUser>>, t: Throwable) {
-                _isLoading.value = (false)
-                Log.e(TAG, "onFailure: ${t.message} ")
-            }
-
-        })
+        }
     }
     fun setLayoutManager(isUsingLinearLayout: Boolean) {
         _isUsingLinearLayout.value = isUsingLinearLayout
     }
 
     fun searchUser(query: String) {
-        val githubUsers = mutableListOf<GithubUser>()
-        val client = ApiConfig.getApiService().searchUser(query)
-        client.enqueue(object: Callback<GithubSearchResponse>{
-            override fun onResponse(
-                call: Call<GithubSearchResponse>,
-                response: Response<GithubSearchResponse>,
-            ) {
-                _isLoading.value = (true)
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        val users = responseBody.items
-                        for (user in users){
-                            githubUsers.add(user)
-                        }
-                        _githubUsers.value = githubUsers
-                        _isLoading.value = (false)
-                    } else {
-                        Log.e(TAG, "onResponse: ${response.message()}")
-                    }
-                }
+        viewModelScope.launch {
+            try {
+                val users = ApiConfig.getApiService().searchUser(query).items
+                _githubUsers.value = Result.Success(users)
+            } catch (e: java.lang.Exception) {
+                _githubUsers.value = Result.Error(e.message.toString())
             }
-
-            override fun onFailure(call: Call<GithubSearchResponse>, t: Throwable) {
-                _isLoading.value = (false)
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-
-        })
+        }
     }
     companion object {
         private const val TAG = "SearchViewModel"

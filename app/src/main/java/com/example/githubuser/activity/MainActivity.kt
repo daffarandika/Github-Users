@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.databinding.ActivityMainBinding
@@ -29,8 +31,9 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var layoutManager: RecyclerView.LayoutManager
+//    private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var searchViewModel: SearchViewModel
+    private var isUsingLinear = true
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_menu, menu)
@@ -38,10 +41,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.switch_layout) {
-            searchViewModel.setLayoutManager(!searchViewModel.isUsingLinearLayout.value!!)
-            setIcon(item)
-        }
         if (item.itemId == R.id.setting) {
             Intent(this@MainActivity, SettingActivity::class.java).apply {
                 startActivity(this)
@@ -50,16 +49,11 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun setIcon(item: MenuItem) {
-        item.icon = if (!searchViewModel.isUsingLinearLayout.value!!)
-                        ContextCompat.getDrawable(this, R.drawable.ic_linear_layout)
-                    else
-                        ContextCompat.getDrawable(this, R.drawable.ic_grid_layout)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        binding.rv.layoutManager = LinearLayoutManager(this)
         val searchViewModelFactory = SearchViewModel().createFactory()
         searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         setContentView(binding.root)
@@ -75,33 +69,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        searchViewModel.isLoading.observe(this) {isLoading ->
-            showLoading(isLoading)
-        }
-
-        searchViewModel.githubUsers.observe(this) { users ->
-            binding.rv.apply {
-                adapter = if (searchViewModel.isUsingLinearLayout.value!!) {
-                    GithubUserAdapter(R.layout.item_github_user_linear, users, this@MainActivity)
-                } else {
-                    GithubUserAdapter(R.layout.item_github_user_grid, users, this@MainActivity)
+        searchViewModel.githubUsers.observe(this) {res ->
+            when (res) {
+                is com.example.githubuser.model.Result.Loading -> binding.progressBar.visibility = View.VISIBLE
+                is com.example.githubuser.model.Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this@MainActivity, res.message, Toast.LENGTH_SHORT).show()
                 }
-            }
-            searchViewModel.isUsingLinearLayout.observe(this) {isUsing ->
-                layoutManager = getLayoutManager(isUsing)
-                binding.rv.layoutManager = this.layoutManager
-            }
-        }
-
-        searchViewModel.isUsingLinearLayout.observe(this) {isUsing ->
-            layoutManager = getLayoutManager(isUsing)
-            binding.rv.layoutManager = this.layoutManager
-            searchViewModel.githubUsers.observe(this) { users ->
-                binding.rv.apply {
-                    adapter = if (searchViewModel.isUsingLinearLayout.value!!) {
-                        GithubUserAdapter(R.layout.item_github_user_linear, users, this@MainActivity)
-                    } else {
-                        GithubUserAdapter(R.layout.item_github_user_grid, users, this@MainActivity)
+                is com.example.githubuser.model.Result.Success -> {
+                    if (res.data.isEmpty()) {
+                        Toast.makeText(this@MainActivity, "No users were found", Toast.LENGTH_SHORT).show()
+                    }
+                    binding.progressBar.visibility = View.GONE
+                    binding.rv.apply {
+                        layoutManager = GridLayoutManager(this@MainActivity, 3)
+                        adapter = GithubUserAdapter(res.data, this@MainActivity)
                     }
                 }
             }
@@ -118,21 +100,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-    }
-
-    private fun getLayoutManager(isUsing: Boolean): RecyclerView.LayoutManager {
-        return if (isUsing) {
-            LinearLayoutManager(this@MainActivity)
-        } else {
-            GridLayoutManager(this@MainActivity, 3)
-        }
-    }
-
-
-
-    private fun showLoading(isLoading: Boolean){
-        if (isLoading) binding.progressBar.visibility = View.VISIBLE
-        else binding.progressBar.visibility = View.GONE
     }
 
 }

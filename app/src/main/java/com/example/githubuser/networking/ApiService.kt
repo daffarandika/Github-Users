@@ -6,12 +6,12 @@ import retrofit2.http.*
 
 interface ApiService {
     @GET("users")
-    fun getInitialUsers(): Call<List<GithubUser>>
+    suspend fun getInitialUsers(): List<GithubUser>
 
     @GET("search/users")
-    fun searchUser(
+    suspend fun searchUser(
         @Query("q") q: String
-    ): Call<GithubSearchResponse>
+    ): GithubSearchResponse
 
     @GET("users/{username}")
     fun getUserDetail(

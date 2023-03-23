@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
@@ -45,22 +46,22 @@ class FollowFragment : Fragment() {
             detailViewModel.getFollowers(username)
             detailViewModel.githubFollowers.observe(viewLifecycleOwner){ followers ->
                 binding.rvFollowers.apply {
-                    adapter = GithubUserAdapter(R.layout.item_github_user_linear, followers ,requireActivity())
-                    layoutManager = LinearLayoutManager(requireActivity())
+                    adapter = GithubUserAdapter(followers ,requireActivity())
+                    layoutManager = GridLayoutManager(requireActivity(), 3)
                 }
             }
         } else {
             detailViewModel.getFollowing(username)
             detailViewModel.githubFollowings.observe(viewLifecycleOwner){ followings ->
                 binding.rvFollowers.apply {
-                    adapter = GithubUserAdapter(R.layout.item_github_user_linear, followings ,requireActivity())
-                    layoutManager = LinearLayoutManager(requireActivity())
+                    adapter = GithubUserAdapter(followings ,requireActivity())
+                    layoutManager = GridLayoutManager(requireActivity(), 3)
                 }
             }
         }
         binding.rvFollowers.apply {
-            adapter = GithubUserAdapter(R.layout.item_github_user_linear, followers ,requireActivity())
-            layoutManager = LinearLayoutManager(requireActivity())
+            adapter = GithubUserAdapter(followers ,requireActivity())
+            layoutManager = GridLayoutManager(requireActivity(), 3)
         }
         return binding.root
     }
