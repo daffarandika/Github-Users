@@ -2,6 +2,7 @@ package com.example.githubuser.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -14,6 +15,8 @@ import com.example.githubuser.model.GithubUserDetail
 import com.example.githubuser.viewmodel.DetailViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import java.text.NumberFormat
+import java.util.*
 
 class DetailActivity : AppCompatActivity() {
 
@@ -67,8 +70,10 @@ class DetailActivity : AppCompatActivity() {
         if (user.bio.isNullOrEmpty()) {
             binding.tvBio.visibility = View.GONE
         }
-        binding.tvFollowers.text = "Followers: ${user.followers}"
-        binding.tvFollowings.text = "Following: ${user.following}"
+        val formatter = "%,d"
+        binding.tvFollowers.text = "${formatter.format(user.followers)}"
+        binding.tvFollowings.text = "${formatter.format(user.following)}"
+        Log.e(TAG, "follower: ${user.followers} following: ${user.following}", )
         Glide.with(this@DetailActivity)
             .load(user.avatarUrl)
             .into(binding.ivUser)

@@ -23,8 +23,8 @@ class ApiConfig {
                 chain.proceed(requestHeaders)
             }
             val client = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
                 .addInterceptor(authInterceptor)
+                .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.github.com/")

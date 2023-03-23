@@ -3,7 +3,6 @@ package com.example.githubuser.adapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.text.BoringLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubuser.activity.DetailActivity
@@ -26,10 +27,11 @@ class GithubUserAdapter(
         val ivAvatar: ImageView = view.findViewById(R.id.ivUser)
         val tvUsername: TextView = view.findViewById(R.id.tvUsername)
         val ibHeart: ImageButton = view.findViewById(R.id.ibHeart)
+        val constraint: ConstraintLayout = view.findViewById(R.id.constraint)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
-        return GViewHolder(LayoutInflater.from(context).inflate(R.layout.item_github_user_grid, parent, false))
+        return GViewHolder(LayoutInflater.from(context).inflate(R.layout.item_github_user, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -39,6 +41,13 @@ class GithubUserAdapter(
     override fun onBindViewHolder(holder: GViewHolder, position: Int) {
         val user: GithubUser = githubUsers[position]
         holder.tvUsername.text = user.login
+        holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.item_background))
+//        when (position % 4) {
+//            0 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_yellow))
+//            2 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_brown))
+//            3 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_pink))
+//        }
+
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra("username", user.login)

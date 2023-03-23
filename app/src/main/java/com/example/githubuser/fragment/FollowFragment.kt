@@ -47,7 +47,7 @@ class FollowFragment : Fragment() {
             detailViewModel.githubFollowers.observe(viewLifecycleOwner){ followers ->
                 binding.rvFollowers.apply {
                     adapter = GithubUserAdapter(followers ,requireActivity())
-                    layoutManager = GridLayoutManager(requireActivity(), 3)
+                    layoutManager = LinearLayoutManager(requireActivity())
                 }
             }
         } else {
@@ -55,13 +55,13 @@ class FollowFragment : Fragment() {
             detailViewModel.githubFollowings.observe(viewLifecycleOwner){ followings ->
                 binding.rvFollowers.apply {
                     adapter = GithubUserAdapter(followings ,requireActivity())
-                    layoutManager = GridLayoutManager(requireActivity(), 3)
+                    layoutManager = LinearLayoutManager(requireActivity())
                 }
             }
         }
         binding.rvFollowers.apply {
             adapter = GithubUserAdapter(followers ,requireActivity())
-            layoutManager = GridLayoutManager(requireActivity(), 3)
+            layoutManager = LinearLayoutManager(requireActivity())
         }
         return binding.root
     }

@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.rv.layoutManager = LinearLayoutManager(this)
         val searchViewModelFactory = SearchViewModel().createFactory()
         searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         setContentView(binding.root)
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     binding.progressBar.visibility = View.GONE
                     binding.rv.apply {
-                        layoutManager = GridLayoutManager(this@MainActivity, 3)
+                        layoutManager = LinearLayoutManager(this@MainActivity)
                         adapter = GithubUserAdapter(res.data, this@MainActivity)
                     }
                 }
