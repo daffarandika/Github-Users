@@ -77,7 +77,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        searchViewModel.getInitialUsers().observe(this) {res ->
+        searchViewModel.getInitialUsers().observe(this){res->
+            searchViewModel.setUsers(res)
+        }
+        searchViewModel.githubUsers.observe(this) {res ->
             when (res) {
                 is com.example.githubuser.model.Result.Loading -> binding.progressBar.visibility = View.VISIBLE
                 is com.example.githubuser.model.Result.Error -> {
@@ -91,7 +94,13 @@ class MainActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     binding.rv.apply {
                         layoutManager = LinearLayoutManager(this@MainActivity)
-                        adapter = GithubUserAdapter(res.data, this@MainActivity)
+                        adapter = GithubUserAdapter(res.data.map { user ->
+                             GithubUser(
+                                 login = user.login,
+                                 avatarUrl = user.avatarUrl,
+                                 url = user.avatarUrl
+                             )
+                        }, this@MainActivity)
                     }
                 }
             }

@@ -25,24 +25,18 @@ data class GithubSearchResponse(
 	val items: List<GithubUser>
 )
 
-@Entity
-@Parcelize
 data class GithubUser(
 
-	@field:ColumnInfo("login")
-	@field:PrimaryKey
+	@field:SerializedName("login")
 	val login: String,
 
-	@field:ColumnInfo("url")
+	@field:SerializedName("url")
 	val url: String,
 
-	@field:ColumnInfo("avatar_url")
+	@field:SerializedName("avatar_url")
 	val avatarUrl: String,
 
-	@field:ColumnInfo("is_favorite")
-	val isFavorite: Boolean,
-
-): Parcelable
+)
 data class GithubUserDetail(
 
 	@field:SerializedName("login")

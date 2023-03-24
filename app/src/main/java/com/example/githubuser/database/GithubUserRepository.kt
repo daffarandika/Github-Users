@@ -3,7 +3,7 @@ package com.example.githubuser.database
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
-import com.example.githubuser.model.GithubUser
+import com.example.githubuser.model.local.GithubUserEntity
 import com.example.githubuser.networking.ApiService
 
 class GithubUserRepository private constructor(
@@ -11,23 +11,27 @@ class GithubUserRepository private constructor(
     private val githubUserDao: GithubUserDao
 ) {
 
-    fun getAllUsers(): LiveData<com.example.githubuser.model.Result<List<GithubUser>>> = liveData {
+    fun getAllUsers(): LiveData<com.example.githubuser.model.Result<List<GithubUserEntity>>> = liveData {
         emit(com.example.githubuser.model.Result.Loading)
         try {
             val githubUser = apiService.getInitialUsers()
             val usersList = githubUser.map {user ->
-                GithubUser(
-                    login = user.login ?: "",
-                    url = user.url ?: "",
-                    avatarUrl = user.avatarUrl ?: "",
-                    isFavorite = false
+                GithubUserEntity(
+                    login = user.login,
+                    avatarUrl = user.avatarUrl,
+                    url = user.url,
+                    isFavorite = false,
+                    bio = "",
+                    followers = -1,
+                    following = -1,
+                    name = ""
                 )
             }
             githubUserDao.upsertGithubUsers(usersList)
         } catch (e: java.lang.Exception) {
             emit(com.example.githubuser.model.Result.Error(e.message.toString()))
         }
-        val localData: LiveData<com.example.githubuser.model.Result<List<GithubUser>>> = githubUserDao.getAllUsers().map {
+        val localData: LiveData<com.example.githubuser.model.Result<List<GithubUserEntity>>> = githubUserDao.getAllUsers().map {
             com.example.githubuser.model.Result.Success(it)
         }
         emitSource(localData)
