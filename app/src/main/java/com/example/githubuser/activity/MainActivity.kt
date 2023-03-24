@@ -62,6 +62,10 @@ class MainActivity : AppCompatActivity() {
             ApiConfig.getApiService(),
             db.getDao()
         )
+
+        binding.floatingActionButton.setOnClickListener {
+            startActivity(Intent(this, FavoriteUserActivity::class.java))
+        }
         val searchViewModelFactory = SearchViewModel(userRepo).createFactory()
         searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         setContentView(binding.root)
@@ -80,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         searchViewModel.getInitialUsers().observe(this){res->
             searchViewModel.setUsers(res)
         }
+
         searchViewModel.githubUsers.observe(this) {res ->
             when (res) {
                 is com.example.githubuser.model.Result.Loading -> binding.progressBar.visibility = View.VISIBLE
@@ -92,8 +97,12 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "No users were found", Toast.LENGTH_SHORT).show()
                     }
                     binding.progressBar.visibility = View.GONE
-                    val adapter = GithubUserAdapter{
-
+                    val adapter = GithubUserAdapter{ user ->
+                        if (user.isFavorite) {
+                            searchViewModel.unsetUserAsFavorite(user)
+                        } else {
+                            searchViewModel.setUserAsFavorite(user)
+                        }
                     }
                     adapter.submitList(res.data)
                     binding.rv.apply {
@@ -111,6 +120,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(query: String): Boolean {
+                // TODO: add this to viewmodel
                 return false
             }
         })

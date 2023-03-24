@@ -20,7 +20,7 @@ abstract class GithubUserDatabase: RoomDatabase() {
     abstract fun getDao(): GithubUserDao
     companion object {
         @Volatile
-        var INSTANCE: GithubUserDatabase? = null
+        private var INSTANCE: GithubUserDatabase? = null
         fun getInstance(context: Context): GithubUserDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Room.databaseBuilder(

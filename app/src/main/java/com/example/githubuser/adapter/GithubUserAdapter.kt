@@ -1,16 +1,8 @@
 package com.example.githubuser.adapter
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -19,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.example.githubuser.activity.DetailActivity
 import com.example.githubuser.R
 import com.example.githubuser.databinding.ItemGithubUserBinding
-import com.example.githubuser.model.GithubUser
 import com.example.githubuser.model.local.GithubUserEntity
 
 class GithubUserAdapter(
@@ -46,17 +37,19 @@ class GithubUserAdapter(
             }
     }
 
-    inner class GViewHolder(val binding: ItemGithubUserBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class GViewHolder(private val binding: ItemGithubUserBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(user: GithubUserEntity) {
             binding.tvUsername.text = user.login
             binding.constraint.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.item_background))
-
-//        when (position % 4) {
-//            0 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_yellow))
-//            2 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_brown))
-//            3 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_pink))
-//        }
-
+            if (user.isFavorite) {
+                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(binding.ibHeart.context, R.drawable.ic_favorite))
+            } else {
+                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(binding.ibHeart.context, R.drawable.ic_favorite_border))
+            }
+            binding.ibHeart.setOnClickListener {
+                onHeartClick(user)
+                notifyDataSetChanged()
+            }
             Glide.with(itemView)
                 .load(user.avatarUrl)
                 .into(binding.ivUser)

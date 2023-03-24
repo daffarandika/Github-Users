@@ -16,9 +16,6 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
     private val _githubUsers = MutableLiveData<Result<List<GithubUserEntity>>>()
     val githubUsers: LiveData<Result<List<GithubUserEntity>>> = _githubUsers
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> = _searchQuery
 
@@ -26,6 +23,20 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
         getInitialUsers()
     }
     fun getInitialUsers(): LiveData<Result<List<GithubUserEntity>>> = githubUserRepository.getAllUsers()
+
+    fun getAllFavoriteUser() = githubUserRepository.getFavoriteUser()
+
+    fun setUserAsFavorite(user: GithubUserEntity){
+        viewModelScope.launch {
+            githubUserRepository.setUserFavorite(user, true)
+        }
+    }
+
+    fun unsetUserAsFavorite(user: GithubUserEntity){
+        viewModelScope.launch {
+            githubUserRepository.setUserFavorite(user, false)
+        }
+    }
 
     fun searchUser(query: String) {
         viewModelScope.launch {
@@ -35,7 +46,7 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
                         login = user.login,
                         avatarUrl = user.avatarUrl,
                         url = user.url,
-                        isFavorite = false,
+                        isFavorite = githubUserRepository.isUserFavorite(user.login),
                         bio = "",
                         followers = -1,
                         following = -1,

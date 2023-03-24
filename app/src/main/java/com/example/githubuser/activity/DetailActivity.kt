@@ -15,7 +15,6 @@ import com.example.githubuser.model.GithubUserDetail
 import com.example.githubuser.viewmodel.DetailViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.text.NumberFormat
 import java.util.*
 
 class DetailActivity : AppCompatActivity() {

@@ -3,7 +3,11 @@ package com.example.githubuser.database
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
+import com.example.githubuser.model.GithubUser
+import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserEntity
+import com.example.githubuser.model.local.GithubUserFollowers
+import com.example.githubuser.model.local.GithubUserFollowing
 import com.example.githubuser.networking.ApiService
 
 class GithubUserRepository private constructor(
@@ -11,12 +15,52 @@ class GithubUserRepository private constructor(
     private val githubUserDao: GithubUserDao
 ) {
 
-    suspend fun addDetailToUser(githubUserEntity: GithubUserEntity) {
+    suspend fun isUserFavorite(login: String) = githubUserDao.isUserFavorite(login)
+
+    suspend fun addDetailToUser(
+        githubUserEntity: GithubUserEntity,
+        name: String,
+        bio: String,
+        followers: Int,
+        following: Int,
+        isFavorite: Boolean
+    ) {
+        githubUserEntity.name = name
+        githubUserEntity.bio = bio
+        githubUserEntity.followers = followers
+        githubUserEntity.following = following
+        githubUserEntity.isFavorite = isFavorite
         githubUserDao.updateGithubUserEntity(githubUserEntity)
     }
 
-    fun getAllUsers(): LiveData<com.example.githubuser.model.Result<List<GithubUserEntity>>> = liveData {
-        emit(com.example.githubuser.model.Result.Loading)
+    //fun getFollower(login: String): LiveData<com.example.githubuser.model.Result<List<G>>>
+
+    suspend fun insertFollowing(following: List<GithubUserFollowing>){
+        githubUserDao.upsertFollowing(following)
+    }
+
+    suspend fun insertFollowers(followers: List<GithubUserFollowers>){
+        githubUserDao.upsertFollowers(followers)
+    }
+
+    fun getFavoriteUser(): LiveData<Result<List<GithubUserEntity>>> = liveData {
+        emit(Result.Loading)
+        try {
+            emitSource(githubUserDao.getAllFavoriteUser().map {
+                Result.Success(it)
+            })
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
+    suspend fun setUserFavorite(githubUserEntity: GithubUserEntity, isFavorite: Boolean){
+        githubUserEntity.isFavorite = isFavorite
+        githubUserDao.updateGithubUserEntity(githubUserEntity)
+    }
+
+    fun getAllUsers(): LiveData<Result<List<GithubUserEntity>>> = liveData {
+        emit(Result.Loading)
         try {
             val githubUser = apiService.getInitialUsers()
             val usersList = githubUser.map {user ->
@@ -24,7 +68,7 @@ class GithubUserRepository private constructor(
                     login = user.login,
                     avatarUrl = user.avatarUrl,
                     url = user.url,
-                    isFavorite = false,
+                    isFavorite = githubUserDao.isUserFavorite(user.login),
                     bio = "",
                     followers = -1,
                     following = -1,
@@ -33,17 +77,57 @@ class GithubUserRepository private constructor(
             }
             githubUserDao.upsertGithubUsers(usersList)
         } catch (e: java.lang.Exception) {
-            emit(com.example.githubuser.model.Result.Error(e.message.toString()))
+            emit(Result.Error(e.message.toString()))
         }
-        val localData: LiveData<com.example.githubuser.model.Result<List<GithubUserEntity>>> = githubUserDao.getAllUsers().map {
-            com.example.githubuser.model.Result.Success(it)
+        val localData: LiveData<Result<List<GithubUserEntity>>> = githubUserDao.getAllUsers().map {
+            Result.Success(it)
         }
         emitSource(localData)
     }
 
+//    fun getFollowing(username: String):LiveData<Result<List<GithubUserFollowing>>> = liveData {
+//        emit(Result.Loading)
+//        try {
+//            val following:List<GithubUser> = apiService.getFollowings(username)
+//            githubUserDao.upsertFollowers(following.map { user ->
+//                GithubUserFollowers(
+//                    id = 0,
+//                    githubUserLogin = username,
+//                    followersLogin = user.login
+//                )
+//            })
+//        } catch (e: Exception) {
+//            emit(Result.Error(e.message.toString()))
+//        }
+//        val localData: LiveData<Result<List<GithubUserFollowing>>> = githubUserDao.getUserFollowing(username).map { githubUserWithFollowing ->
+//            Result.Success(githubUserWithFollowing.first().following)
+//        }
+//        emitSource(localData)
+//    }
+//
+//    fun getFollowers(username: String):LiveData<Result<List<GithubUserFollowers>>> = liveData {
+//        emit(Result.Loading)
+//        try {
+//            val followers:List<GithubUser> = apiService.getFollowers(username)
+//            githubUserDao.upsertFollowers(followers.map { user ->
+//                GithubUserFollowers(
+//                    id = 0,
+//                    githubUserLogin = username,
+//                    followersLogin = user.login
+//                )
+//            })
+//        } catch (e: Exception) {
+//            emit(Result.Error(e.message.toString()))
+//        }
+//        val localData: LiveData<Result<List<GithubUserFollowers>>> = githubUserDao.getUserFollowers(username).map { githubUserWithFollowers ->
+//            Result.Success(githubUserWithFollowers.first().followers)
+//        }
+//        emitSource(localData)
+//    }
+
     companion object {
         @Volatile
-        var INSTANCE: GithubUserRepository? = null
+        private var INSTANCE: GithubUserRepository? = null
         fun getInstance(
             apiService: ApiService,
             githubUserDao: GithubUserDao

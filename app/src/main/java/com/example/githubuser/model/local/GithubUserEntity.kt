@@ -14,33 +14,33 @@ data class GithubUserEntity(
     @PrimaryKey(autoGenerate = false)
     @field:SerializedName("login")
     @field:ColumnInfo("login")
-    val login: String,
+    var login: String,
 
     @field:SerializedName("url")
     @field:ColumnInfo("url")
-    val url: String,
+    var url: String,
 
     @field:SerializedName("avatar_url")
     @field:ColumnInfo("avatarUrl")
-    val avatarUrl: String,
+    var avatarUrl: String,
 
     @field:SerializedName("name")
     @field:ColumnInfo("name")
-    val name: String,
+    var name: String,
 
     @field:SerializedName("followers")
     @field:ColumnInfo("followers")
-    val followers: Int,
+    var followers: Int,
 
     @field:SerializedName("following")
     @field:ColumnInfo("following")
-    val following: Int,
+    var following: Int,
 
     @field:SerializedName("bio")
     @field:ColumnInfo("bio")
-    val bio: String,
+    var bio: String,
 
     @field:ColumnInfo("isFavorite")
-    val isFavorite: Boolean,
+    var isFavorite: Boolean,
 
 ): Parcelable

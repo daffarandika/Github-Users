@@ -11,5 +11,5 @@ data class GithubUserWithFollowing (
         parentColumn = "login",
         entityColumn = "githubUserLogin"
     )
-    val followers: List<GithubUserFollowing>
+    val following: List<GithubUserFollowing>
 )
