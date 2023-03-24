@@ -11,6 +11,10 @@ class GithubUserRepository private constructor(
     private val githubUserDao: GithubUserDao
 ) {
 
+    suspend fun addDetailToUser(githubUserEntity: GithubUserEntity) {
+        githubUserDao.updateGithubUserEntity(githubUserEntity)
+    }
+
     fun getAllUsers(): LiveData<com.example.githubuser.model.Result<List<GithubUserEntity>>> = liveData {
         emit(com.example.githubuser.model.Result.Loading)
         try {

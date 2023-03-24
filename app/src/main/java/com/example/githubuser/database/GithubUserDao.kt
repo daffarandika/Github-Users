@@ -19,6 +19,8 @@ interface GithubUserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertFollowing(following: List<GithubUserFollowing>)
+    @Update
+    suspend fun updateGithubUserEntity(githubUserEntity: GithubUserEntity)
 
     @Query("SELECT * FROM githubUserEntity")
     fun getAllUsers(): LiveData<List<GithubUserEntity>>

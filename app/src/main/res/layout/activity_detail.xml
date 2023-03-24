@@ -15,12 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            android:background="@color/black"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:backgroundTint="@color/window_background"
             app:expandedTitleTextColor="@color/black"
             app:collapsedTitleTextColor="@color/black"
-            app:contentScrim="@color/gh_blue"
+            app:contentScrim="@color/window_background"
             app:titleEnabled="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:src="@drawable/ic_favorite_border_large"
+                    android:src="@drawable/ic_favorite_large"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ivUser"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -62,7 +61,9 @@
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:textColor="@color/window_background"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
                     android:text="Name"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -72,10 +73,12 @@
                     app:layout_constraintTop_toBottomOf="@id/ivUser" />
 
                 <TextView
+                    android:textColor="@color/window_background"
                     android:id="@+id/tvUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
                     android:text="username"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@id/tvBio"
@@ -85,10 +88,10 @@
 
                 <TextView
                     android:id="@+id/tvBio"
+                    android:textColor="@color/window_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:layout_marginStart="5dp"
+                    android:layout_margin="10dp"
                     android:text="bio"
                     android:textSize="14sp"
                     android:gravity="center"
@@ -96,65 +99,69 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvUsername" />
 
-                <LinearLayout
-                    android:id="@+id/linearLayout2"
-                    android:layout_width="100dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_margin="10dp"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@+id/linearLayout"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    android:background="@drawable/blue_rounded_corner"
+                    android:backgroundTint="@color/gh_blue"
+                    android:padding="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvBio">
-
-                    <TextView
-                        android:id="@+id/tvFollowers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="18sp"
-                        app:layout_constraintBottom_toTopOf="@id/tvFollowings"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvBio" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Followers"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvFollowers" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/linearLayout2"
                     app:layout_constraintTop_toBottomOf="@id/tvBio">
 
-                    <TextView
-                        android:id="@+id/tvFollowings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="5dp"
-                        android:layout_marginStart="5dp"
-                        android:text="0"
-                        android:textSize="18sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvBio" />
+                        <TextView
+                            android:id="@+id/tvFollowers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="18sp"
+                            android:textColor="@color/white"
+                            app:layout_constraintStart_toStartOf="@id/tvfolo"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="@id/tvfolo"
+                            />
+                        <TextView
+                            android:id="@+id/tvFollowings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            app:layout_constraintStart_toStartOf="@id/tvfoli"
+                            app:layout_constraintEnd_toEndOf="@id/tvfoli"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <TextView
+                            android:layout_margin="5dp"
+                            android:id="@+id/tvfolo"
+                            android:textColor="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Followers"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvFollowers"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvfoli"
+                            />
+
 
                     <TextView
+                        android:id="@+id/tvfoli"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
                         android:text="Following"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvFollowings" />
-                </LinearLayout>
+                        app:layout_constraintStart_toEndOf="@id/tvfolo"
+                        app:layout_constraintTop_toBottomOf="@+id/tvFollowings"
+                        />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

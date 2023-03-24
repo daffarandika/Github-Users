@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.githubuser.database.GithubUserDatabase
 import com.example.githubuser.model.GithubUser
 import com.example.githubuser.model.GithubUserDetail
+import com.example.githubuser.model.local.GithubUserEntity
 import com.example.githubuser.networking.ApiConfig
 import retrofit2.Call
 import retrofit2.Callback

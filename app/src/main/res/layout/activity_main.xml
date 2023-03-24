@@ -41,6 +41,8 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:backgroundTint="@color/gh_blue"
+        android:tint="@color/white"
+        app:borderWidth="0dp"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
