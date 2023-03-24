@@ -21,7 +21,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
+import com.example.githubuser.database.GithubUserDatabase
+import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.ActivityMainBinding
+import com.example.githubuser.model.GithubUser
+import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.preferences.SettingPreference
 import com.example.githubuser.viewmodel.MainViewModel
 import com.example.githubuser.viewmodel.SearchViewModel
@@ -53,7 +57,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val searchViewModelFactory = SearchViewModel().createFactory()
+        val db = GithubUserDatabase.getInstance(this@MainActivity)
+        val userRepo = GithubUserRepository.getInstance(
+            ApiConfig.getApiService(),
+            db.getDao()
+        )
+        val searchViewModelFactory = SearchViewModel(userRepo).createFactory()
         searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         setContentView(binding.root)
 
@@ -68,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        searchViewModel.githubUsers.observe(this) {res ->
+        searchViewModel.getInitialUsers().observe(this) {res ->
             when (res) {
                 is com.example.githubuser.model.Result.Loading -> binding.progressBar.visibility = View.VISIBLE
                 is com.example.githubuser.model.Result.Error -> {

@@ -2,6 +2,7 @@ package com.example.githubuser.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.model.GithubSearchResponse
 import com.example.githubuser.model.GithubUser
 import com.example.githubuser.networking.ApiConfig
@@ -12,7 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.example.githubuser.model.Result as Result
 
-class SearchViewModel: ViewModel() {
+class SearchViewModel(private val githubUserRepository: GithubUserRepository): ViewModel() {
     
     private val _githubUsers = MutableLiveData<Result<List<GithubUser>>>()
     val githubUsers: LiveData<Result<List<GithubUser>>> = _githubUsers
@@ -30,15 +31,7 @@ class SearchViewModel: ViewModel() {
         _isUsingLinearLayout.value = true
         getInitialUsers()
     }
-    fun getInitialUsers(){
-        viewModelScope.launch {
-            try {
-                _githubUsers.value = Result.Success(ApiConfig.getApiService().getInitialUsers())
-            } catch (e: Exception) {
-                _githubUsers.value = Result.Error(e.message.toString())
-            }
-        }
-    }
+    fun getInitialUsers(): LiveData<Result<List<GithubUser>>> = githubUserRepository.getAllUsers()
     fun setLayoutManager(isUsingLinearLayout: Boolean) {
         _isUsingLinearLayout.value = isUsingLinearLayout
     }
