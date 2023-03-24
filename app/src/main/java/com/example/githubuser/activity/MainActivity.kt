@@ -92,15 +92,13 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "No users were found", Toast.LENGTH_SHORT).show()
                     }
                     binding.progressBar.visibility = View.GONE
+                    val adapter = GithubUserAdapter{
+
+                    }
+                    adapter.submitList(res.data)
                     binding.rv.apply {
                         layoutManager = LinearLayoutManager(this@MainActivity)
-                        adapter = GithubUserAdapter(res.data.map { user ->
-                             GithubUser(
-                                 login = user.login,
-                                 avatarUrl = user.avatarUrl,
-                                 url = user.avatarUrl
-                             )
-                        }, this@MainActivity)
+                        this.adapter = adapter
                     }
                 }
             }

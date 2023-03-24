@@ -12,52 +12,70 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.githubuser.activity.DetailActivity
 import com.example.githubuser.R
+import com.example.githubuser.databinding.ItemGithubUserBinding
 import com.example.githubuser.model.GithubUser
+import com.example.githubuser.model.local.GithubUserEntity
 
 class GithubUserAdapter(
-    val githubUsers: List<GithubUser>,
-    val context: Context
-): RecyclerView.Adapter<GithubUserAdapter.GViewHolder>() {
+    private val onHeartClick: (GithubUserEntity) -> Unit
+): ListAdapter<GithubUserEntity, GithubUserAdapter.GViewHolder>(DIFF_CALLBACK) {
 
-    inner class GViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val ivAvatar: ImageView = view.findViewById(R.id.ivUser)
-        val tvUsername: TextView = view.findViewById(R.id.tvUsername)
-        val ibHeart: ImageButton = view.findViewById(R.id.ibHeart)
-        val constraint: ConstraintLayout = view.findViewById(R.id.constraint)
+    companion object {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<GithubUserEntity> =
+            object: DiffUtil.ItemCallback<GithubUserEntity>() {
+                override fun areItemsTheSame(
+                    oldItem: GithubUserEntity,
+                    newItem: GithubUserEntity,
+                ): Boolean {
+                    return oldItem.login == newItem.login
+                }
+
+                override fun areContentsTheSame(
+                    oldItem: GithubUserEntity,
+                    newItem: GithubUserEntity,
+                ): Boolean {
+                    return oldItem == newItem
+                }
+
+            }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
-        return GViewHolder(LayoutInflater.from(context).inflate(R.layout.item_github_user, parent, false))
-    }
+    inner class GViewHolder(val binding: ItemGithubUserBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(user: GithubUserEntity) {
+            binding.tvUsername.text = user.login
+            binding.constraint.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.item_background))
 
-    override fun getItemCount(): Int {
-        return githubUsers.size
-    }
-
-    override fun onBindViewHolder(holder: GViewHolder, position: Int) {
-        val user: GithubUser = githubUsers[position]
-        holder.tvUsername.text = user.login
-        holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.item_background))
 //        when (position % 4) {
 //            0 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_yellow))
 //            2 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_brown))
 //            3 -> holder.constraint.setBackgroundColor(ContextCompat.getColor(context, R.color.pastel_pink))
 //        }
 
-        holder.itemView.setOnClickListener {
-            val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("username", user.login)
-            (context as Activity).startActivity(intent)
+            Glide.with(itemView)
+                .load(user.avatarUrl)
+                .into(binding.ivUser)
+            itemView.setOnClickListener{
+                Intent(itemView.context, DetailActivity::class.java).apply {
+                    putExtra("username", user.login)
+                    itemView.context.startActivity(this)
+                }
+            }
         }
-        holder.ibHeart.setOnClickListener {
-            Toast.makeText(context, "hai", Toast.LENGTH_SHORT).show()
-        }
-        Glide.with(context)
-            .load(user.avatarUrl)
-            .into(holder.ivAvatar)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
+        return GViewHolder(ItemGithubUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    }
+
+
+    override fun onBindViewHolder(holder: GViewHolder, position: Int) {
+        val user = getItem(position)
+        holder.bind(user)
     }
 }
