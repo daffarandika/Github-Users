@@ -36,6 +36,11 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.back.setOnClickListener {
+            this.finish()
+            overridePendingTransition(R.anim.slide_left, R.anim.slide_left)
+        }
+
         val username = intent.extras!!.getString("username")
 
         detailViewModel.getDetail(username!!)
