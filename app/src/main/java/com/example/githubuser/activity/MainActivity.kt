@@ -85,6 +85,14 @@ class MainActivity : AppCompatActivity() {
             searchViewModel.setUsers(res)
         }
 
+        val adapter = GithubUserAdapter{ user ->
+            if (user.isFavorite) {
+                searchViewModel.unsetUserAsFavorite(user)
+            } else {
+                searchViewModel.setUserAsFavorite(user)
+            }
+        }
+
         searchViewModel.githubUsers.observe(this) {res ->
             when (res) {
                 is com.example.githubuser.model.Result.Loading -> binding.progressBar.visibility = View.VISIBLE
@@ -97,20 +105,14 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "No users were found", Toast.LENGTH_SHORT).show()
                     }
                     binding.progressBar.visibility = View.GONE
-                    val adapter = GithubUserAdapter{ user ->
-                        if (user.isFavorite) {
-                            searchViewModel.unsetUserAsFavorite(user)
-                        } else {
-                            searchViewModel.setUserAsFavorite(user)
-                        }
-                    }
                     adapter.submitList(res.data)
-                    binding.rv.apply {
-                        layoutManager = LinearLayoutManager(this@MainActivity)
-                        this.adapter = adapter
-                    }
                 }
             }
+        }
+
+        binding.rv.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            this.adapter = adapter
         }
 
         binding.svUsers.setOnQueryTextListener(object: SearchView.OnQueryTextListener{

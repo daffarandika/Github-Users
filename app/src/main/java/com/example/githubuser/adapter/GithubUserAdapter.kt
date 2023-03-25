@@ -1,5 +1,6 @@
 package com.example.githubuser.adapter
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -27,29 +28,22 @@ class GithubUserAdapter(
                     return oldItem.login == newItem.login
                 }
 
+                @SuppressLint("DiffUtilEquals")
                 override fun areContentsTheSame(
                     oldItem: GithubUserEntity,
                     newItem: GithubUserEntity,
                 ): Boolean {
                     return oldItem == newItem
                 }
-
             }
     }
 
-    inner class GViewHolder(private val binding: ItemGithubUserBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class GViewHolder(val binding: ItemGithubUserBinding): RecyclerView.ViewHolder(
+        binding.root
+    ) {
         fun bind(user: GithubUserEntity) {
             binding.tvUsername.text = user.login
             binding.constraint.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.item_background))
-            if (user.isFavorite) {
-                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(binding.ibHeart.context, R.drawable.ic_favorite))
-            } else {
-                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(binding.ibHeart.context, R.drawable.ic_favorite_border))
-            }
-            binding.ibHeart.setOnClickListener {
-                onHeartClick(user)
-                notifyDataSetChanged()
-            }
             Glide.with(itemView)
                 .load(user.avatarUrl)
                 .into(binding.ivUser)
@@ -63,12 +57,25 @@ class GithubUserAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
-        return GViewHolder(ItemGithubUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        val binding = ItemGithubUserBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false)
+        return GViewHolder(binding)
     }
-
 
     override fun onBindViewHolder(holder: GViewHolder, position: Int) {
         val user = getItem(position)
         holder.bind(user)
+        val ibHeart = holder.binding.ibHeart
+        if (user.isFavorite) {
+            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite))
+        } else {
+            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite_border))
+        }
+        ibHeart.setOnClickListener {
+            onHeartClick(user)
+            notifyDataSetChanged()
+        }
     }
 }
