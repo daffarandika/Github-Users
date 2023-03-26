@@ -33,23 +33,23 @@ class FavoriteUserActivity : AppCompatActivity() {
         val searchViewModelFactory = SearchViewModel(GithubUserRepository.getInstance(ApiConfig.getApiService(), GithubUserDatabase.getInstance(this).getDao())).createFactory()
         val searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         val adapter = GithubUserAdapter{ user ->
-            if (user.isFavorite) {
-                searchViewModel.unsetUserAsFavorite(user)
-            } else {
-                searchViewModel.setUserAsFavorite(user)
-            }
+//            if (user.isFavorite) {
+//                searchViewModel.unsetUserAsFavorite(user)
+//            } else {
+//                searchViewModel.setUserAsFavorite(user)
+//            }
         }
-        searchViewModel.getAllFavoriteUser().observe(this) {res ->
-            when (res) {
-                is Result.Loading -> {}
-                is Result.Error -> {
-                    Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
-                }
-                is Result.Success -> {
-                    adapter.submitList(res.data)
-                }
-            }
-        }
+//        searchViewModel.getAllFavoriteUser().observe(this) {res ->
+//            when (res) {
+//                is Result.Loading -> {}
+//                is Result.Error -> {
+//                    Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
+//                }
+//                is Result.Success -> {
+//                    adapter.submitList(res.data)
+//                }
+//            }
+//        }
         binding.rvFav.apply {
             this.adapter = adapter
             layoutManager = LinearLayoutManager(this@FavoriteUserActivity)

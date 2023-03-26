@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 @Entity
 @Parcelize
-data class GithubUserEntity(
+data class GithubUserDetailEntity(
 
     @PrimaryKey(autoGenerate = false)
     @field:SerializedName("login")
@@ -19,10 +19,6 @@ data class GithubUserEntity(
     @field:SerializedName("url")
     @field:ColumnInfo("url")
     var url: String,
-
-    @field:SerializedName("avatar_url")
-    @field:ColumnInfo("avatarUrl")
-    var avatarUrl: String,
 
     @field:SerializedName("name")
     @field:ColumnInfo("name")

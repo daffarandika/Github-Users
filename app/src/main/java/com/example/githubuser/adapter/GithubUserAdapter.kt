@@ -12,26 +12,26 @@ import com.bumptech.glide.Glide
 import com.example.githubuser.activity.DetailActivity
 import com.example.githubuser.R
 import com.example.githubuser.databinding.ItemGithubUserBinding
-import com.example.githubuser.model.local.GithubUserEntity
+import com.example.githubuser.model.local.GithubUserHeader
 
 class GithubUserAdapter(
-    private val onHeartClick: (GithubUserEntity) -> Unit
-): ListAdapter<GithubUserEntity, GithubUserAdapter.GViewHolder>(DIFF_CALLBACK) {
+    private val onHeartClick: (GithubUserHeader) -> Unit
+): ListAdapter<GithubUserHeader, GithubUserAdapter.GViewHolder>(DIFF_CALLBACK) {
 
     companion object {
-        val DIFF_CALLBACK: DiffUtil.ItemCallback<GithubUserEntity> =
-            object: DiffUtil.ItemCallback<GithubUserEntity>() {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<GithubUserHeader> =
+            object: DiffUtil.ItemCallback<GithubUserHeader>() {
                 override fun areItemsTheSame(
-                    oldItem: GithubUserEntity,
-                    newItem: GithubUserEntity,
+                    oldItem: GithubUserHeader,
+                    newItem: GithubUserHeader,
                 ): Boolean {
                     return oldItem.login == newItem.login
                 }
 
                 @SuppressLint("DiffUtilEquals")
                 override fun areContentsTheSame(
-                    oldItem: GithubUserEntity,
-                    newItem: GithubUserEntity,
+                    oldItem: GithubUserHeader,
+                    newItem: GithubUserHeader,
                 ): Boolean {
                     return oldItem == newItem
                 }
@@ -41,7 +41,7 @@ class GithubUserAdapter(
     inner class GViewHolder(val binding: ItemGithubUserBinding): RecyclerView.ViewHolder(
         binding.root
     ) {
-        fun bind(user: GithubUserEntity) {
+        fun bind(user: GithubUserHeader) {
             binding.tvUsername.text = user.login
             binding.constraint.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.item_background))
             Glide.with(itemView)
@@ -68,11 +68,11 @@ class GithubUserAdapter(
         val user = getItem(position)
         holder.bind(user)
         val ibHeart = holder.binding.ibHeart
-        if (user.isFavorite) {
-            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite))
-        } else {
-            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite_border))
-        }
+//        if (user.isFavorite) {
+//            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite))
+//        } else {
+//            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite_border))
+//        }
         ibHeart.setOnClickListener {
             onHeartClick(user)
             notifyDataSetChanged()

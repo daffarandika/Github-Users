@@ -86,11 +86,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val adapter = GithubUserAdapter{ user ->
-            if (user.isFavorite) {
-                searchViewModel.unsetUserAsFavorite(user)
-            } else {
-                searchViewModel.setUserAsFavorite(user)
-            }
+//            if (user.isFavorite) {
+//                searchViewModel.unsetUserAsFavorite(user)
+//            } else {
+//                searchViewModel.setUserAsFavorite(user)
+//            }
         }
 
         searchViewModel.githubUsers.observe(this) {res ->

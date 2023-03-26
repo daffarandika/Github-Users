@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.databinding.FragmentFollowBinding
 import com.example.githubuser.model.GithubUser
-import com.example.githubuser.model.local.GithubUserEntity
 import com.example.githubuser.viewmodel.DetailViewModel
 
 class FollowFragment : Fragment() {
@@ -48,18 +47,18 @@ class FollowFragment : Fragment() {
                     adapter = GithubUserAdapter{
 
                     }.apply {
-                        submitList(followers.map {user ->
-                            GithubUserEntity(
-                                login = user.login,
-                                avatarUrl = user.avatarUrl,
-                                url = user.url,
-                                isFavorite = false,
-                                bio = "",
-                                followers = -1,
-                                following = -1,
-                                name = ""
-                            )
-                        })
+//                        submitList(followers.map {user ->
+//                            GithubUserEntity(
+//                                login = user.login,
+//                                avatarUrl = user.avatarUrl,
+//                                url = user.url,
+//                                isFavorite = false,
+//                                bio = "",
+//                                followers = -1,
+//                                following = -1,
+//                                name = ""
+//                            )
+//                        })
                     }
                     layoutManager = LinearLayoutManager(requireActivity())
                 }
@@ -71,18 +70,18 @@ class FollowFragment : Fragment() {
                     adapter = GithubUserAdapter{
 
                     }.apply {
-                        submitList(followings.map {user ->
-                            GithubUserEntity(
-                                login = user.login,
-                                avatarUrl = user.avatarUrl,
-                                url = user.url,
-                                isFavorite = false,
-                                bio = "",
-                                followers = -1,
-                                following = -1,
-                                name = ""
-                            )
-                        })
+//                        submitList(followings.map {user ->
+//                            GithubUserEntity(
+//                                login = user.login,
+//                                avatarUrl = user.avatarUrl,
+//                                url = user.url,
+//                                isFavorite = false,
+//                                bio = "",
+//                                followers = -1,
+//                                following = -1,
+//                                name = ""
+//                            )
+//                        })
                     }
                     layoutManager = LinearLayoutManager(requireActivity())
                 }
@@ -93,18 +92,18 @@ class FollowFragment : Fragment() {
                 adapter = GithubUserAdapter {
 
                 }.apply {
-                    submitList(followers.map { user ->
-                        GithubUserEntity(
-                            login = user.login,
-                            avatarUrl = user.avatarUrl,
-                            url = user.url,
-                            isFavorite = false,
-                            bio = "",
-                            followers = -1,
-                            following = -1,
-                            name = ""
-                        )
-                    })
+//                    submitList(followers.map { user ->
+//                        GithubUserEntity(
+//                            login = user.login,
+//                            avatarUrl = user.avatarUrl,
+//                            url = user.url,
+//                            isFavorite = false,
+//                            bio = "",
+//                            followers = -1,
+//                            following = -1,
+//                            name = ""
+//                        )
+//                    })
                 }
                 layoutManager = LinearLayoutManager(requireActivity())
             }
