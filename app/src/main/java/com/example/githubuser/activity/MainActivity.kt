@@ -25,6 +25,7 @@ import com.example.githubuser.database.GithubUserDatabase
 import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.ActivityMainBinding
 import com.example.githubuser.model.GithubUser
+import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.preferences.SettingPreference
 import com.example.githubuser.viewmodel.MainViewModel
@@ -86,11 +87,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val adapter = GithubUserAdapter{ user ->
-//            if (user.isFavorite) {
-//                searchViewModel.unsetUserAsFavorite(user)
-//            } else {
-//                searchViewModel.setUserAsFavorite(user)
-//            }
+            searchViewModel.insertUserDetail(user.login)
         }
 
         searchViewModel.githubUsers.observe(this) {res ->

@@ -73,29 +73,29 @@ class DetailViewModel: ViewModel() {
     }
 
     fun getDetail(username: String) {
-        val clientDetail = ApiConfig.getApiService().getUserDetail(username)
-        clientDetail.enqueue(object: Callback<GithubUserDetail>{
-            override fun onResponse(
-                call: Call<GithubUserDetail>,
-                response: Response<GithubUserDetail>,
-            ) {
-                val responseBody = response.body()
-                _isLoading.value = (true)
-                if (response.isSuccessful) {
-                    if (responseBody != null) {
-                        _githubUser.value = responseBody!!
-                        _isLoading.value = (false)
-                    }
-                    else Log.e(TAG, "onResponse: ${response.message()}")
-                } else Log.e(TAG, "onResponse: ${response.message()}")
-            }
-
-            override fun onFailure(call: Call<GithubUserDetail>, t: Throwable) {
-                _isLoading.value = (false)
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
-
+//        val clientDetail = ApiConfig.getApiService().getUserDetail(username)
+//        clientDetail.enqueue(object: Callback<GithubUserDetail>{
+//            override fun onResponse(
+//                call: Call<GithubUserDetail>,
+//                response: Response<GithubUserDetail>,
+//            ) {
+//                val responseBody = response.body()
+//                _isLoading.value = (true)
+//                if (response.isSuccessful) {
+//                    if (responseBody != null) {
+//                        _githubUser.value = responseBody!!
+//                        _isLoading.value = (false)
+//                    }
+//                    else Log.e(TAG, "onResponse: ${response.message()}")
+//                } else Log.e(TAG, "onResponse: ${response.message()}")
+//            }
+//
+//            override fun onFailure(call: Call<GithubUserDetail>, t: Throwable) {
+//                _isLoading.value = (false)
+//                Log.e(TAG, "onFailure: ${t.message}")
+//            }
+//        })
+//
     }
     companion object {
         private const val TAG = "DetailViewModel"

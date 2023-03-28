@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.example.githubuser.model.Result
+import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiService
 
@@ -30,6 +31,13 @@ class GithubUserRepository private constructor(
         }
         emitSource(localData)
     }
+
+    suspend fun insertUserDetail(githubUserDetailEntity: GithubUserDetailEntity){
+        githubUserDao.insertUserDetail(githubUserDetailEntity)
+    }
+
+    suspend fun isUserFavorite(login: String) = githubUserDao.isUserFavorite(login)
+
 //
 //    suspend fun isUserFavorite(login: String) = githubUserDao.isUserFavorite(login)
 //

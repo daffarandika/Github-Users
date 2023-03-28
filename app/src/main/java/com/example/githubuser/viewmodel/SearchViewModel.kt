@@ -2,6 +2,7 @@ package com.example.githubuser.viewmodel
 
 import androidx.lifecycle.*
 import com.example.githubuser.database.GithubUserRepository
+import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import kotlinx.coroutines.launch
@@ -33,6 +34,23 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
 //            githubUserRepository.setUserFavorite(user, false)
 //        }
 //    }
+
+    fun insertUserDetail(login: String) {
+        viewModelScope.launch {
+            val user = ApiConfig.getApiService().getUserDetail(login)
+            githubUserRepository.insertUserDetail(
+                GithubUserDetailEntity(
+                    login = login,
+                    url = user.url,
+                    name = user.name,
+                    following = user.following,
+                    followers = user.followers,
+                    bio = user.bio ?: "",
+                    isFavorite = false
+                )
+            )
+        }
+    }
 
     fun searchUser(query: String) {
         viewModelScope.launch {
