@@ -23,6 +23,9 @@ interface GithubUserDao {
     @Query("SELECT * FROM GithubUserHeader")
     fun getUserHeaders(): LiveData<List<GithubUserHeader>>
 
+    @Query("SELECT * FROM GithubUserHeader where isFavorite = 1")
+    fun getFavoriteUsers(): LiveData<List<GithubUserHeader>>
+
     @Query("SELECT * FROM GithubUserDetailEntity where login = :login")
     fun getUserDetail(login: String): LiveData<GithubUserDetailEntity>
 

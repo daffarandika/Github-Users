@@ -166,6 +166,17 @@ class GithubUserRepository private constructor(
 ////        emitSource(localData)
 ////    }
 //
+    fun getFavoriteUsers(): LiveData<Result<List<GithubUserHeader>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val favoriteUsers: LiveData<Result<List<GithubUserHeader>>> = githubUserDao.getFavoriteUsers().map {
+                Result.Success(it)
+            }
+            emitSource(favoriteUsers)
+        } catch (e: java.lang.Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
 
     companion object {
         @Volatile

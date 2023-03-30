@@ -1,5 +1,6 @@
 package com.example.githubuser.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -33,25 +34,29 @@ class FavoriteUserActivity : AppCompatActivity() {
         val searchViewModelFactory = SearchViewModel(GithubUserRepository.getInstance(ApiConfig.getApiService(), GithubUserDatabase.getInstance(this).getDao())).createFactory()
         val searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         val adapter = GithubUserAdapter(onHeartClick = { user ->
-//            if (user.isFavorite) {
-//                searchViewModel.unsetUserAsFavorite(user)
-//            } else {
-//                searchViewModel.setUserAsFavorite(user)
-//            }
-        }, onItemClick = {
-
+            if (user.isFavorite) {
+                searchViewModel.unsetUserAsFavorite(user.login)
+            } else {
+                searchViewModel.setUserAsFavorite(user.login)
+            }
+        }, onItemClick = { user ->
+            startActivity(Intent(
+                this@FavoriteUserActivity,
+                DetailActivity::class.java).apply {
+                    putExtra("username", user.login)
+            })
         })
-//        searchViewModel.getAllFavoriteUser().observe(this) {res ->
-//            when (res) {
-//                is Result.Loading -> {}
-//                is Result.Error -> {
-//                    Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
-//                }
-//                is Result.Success -> {
-//                    adapter.submitList(res.data)
-//                }
-//            }
-//        }
+        searchViewModel.getAllFavoriteUser().observe(this) {res ->
+            when (res) {
+                is Result.Loading -> {}
+                is Result.Error -> {
+                    Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
+                }
+                is Result.Success -> {
+                    adapter.submitList(res.data)
+                }
+            }
+        }
         binding.rvFav.apply {
             this.adapter = adapter
             layoutManager = LinearLayoutManager(this@FavoriteUserActivity)

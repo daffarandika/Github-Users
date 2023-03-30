@@ -22,7 +22,7 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
     }
     fun getInitialUsers(): LiveData<Result<List<GithubUserHeader>>> = githubUserRepository.getInitialUser()
 
-    //fun getAllFavoriteUser() = githubUserRepository.getFavoriteUser()
+    fun getAllFavoriteUser() = githubUserRepository.getFavoriteUsers()
 
 //    fun setUserAsFavorite(user: GithubUserDetailEntity){
 //        viewModelScope.launch {
