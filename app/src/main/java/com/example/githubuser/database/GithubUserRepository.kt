@@ -6,6 +6,7 @@ import androidx.lifecycle.map
 import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
+import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.networking.ApiService
 
 class GithubUserRepository private constructor(
@@ -25,6 +26,31 @@ class GithubUserRepository private constructor(
             }
             githubUserDao.insertUserHeaders(usersList)
         } catch (e: java.lang.Exception){
+            emit(Result.Error(e.message.toString()))
+        }
+        val localData: LiveData<Result<List<GithubUserHeader>>> = githubUserDao.getUserHeaders().map {
+            Result.Success(it)
+        }
+        emitSource(localData)
+    }
+
+    suspend fun insertUsers(users: List<GithubUserHeader>) {
+        githubUserDao.insertUserHeaders(users)
+    }
+
+    fun searchUser(query: String): LiveData<Result<List<GithubUserHeader>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val users = ApiConfig.getApiService().searchUser(query).items.map { user ->
+                val isUserFavorite = isUserFavorite(user.login)
+                GithubUserHeader(
+                    login = user.login,
+                    avatarUrl = user.avatarUrl,
+                    isFavorite = isUserFavorite
+                )
+            }
+            insertUsers(users)
+        } catch (e: java.lang.Exception) {
             emit(Result.Error(e.message.toString()))
         }
         val localData: LiveData<Result<List<GithubUserHeader>>> = githubUserDao.getUserHeaders().map {

@@ -10,22 +10,16 @@ import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.database.GithubUserDatabase
 import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.ActivityMainBinding
-import com.example.githubuser.model.GithubUser
-import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.preferences.SettingPreference
@@ -37,9 +31,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-//    private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var searchViewModel: SearchViewModel
-    private var isUsingLinear = true
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_menu, menu)
@@ -133,7 +125,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.svUsers.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String): Boolean {
-                searchViewModel.searchUser(query)
+                searchViewModel.searchUser(query).observe(this@MainActivity) {res ->
+                    when (res) {
+                        is com.example.githubuser.model.Result.Loading -> {}
+                        is com.example.githubuser.model.Result.Error -> {}
+                        is com.example.githubuser.model.Result.Success -> {
+                            adapter.submitList(res.data)
+                            binding.rv.apply {
+                                layoutManager = LinearLayoutManager(this@MainActivity)
+                                this.adapter = adapter
+                            }
+                        }
+                    }
+                }
                 return false
             }
 

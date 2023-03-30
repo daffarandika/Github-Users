@@ -5,7 +5,6 @@ import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.githubuser.model.Result as Result
 
@@ -64,27 +63,12 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
         }
     }
 
-    fun searchUser(query: String) {
-        viewModelScope.launch {
-            try {
-                val users = ApiConfig.getApiService().searchUser(query).items.map { user ->
-                    val isUserFavorite = githubUserRepository.isUserFavorite(user.login)
-                    GithubUserHeader(
-                        login = user.login,
-                        avatarUrl = user.avatarUrl,
-                        isFavorite = isUserFavorite
-                    )
-                }
-                _githubUsers.value = Result.Success(users)
-            } catch (e: java.lang.Exception) {
-                _githubUsers.value = Result.Error(e.message.toString())
-            }
-        }
-    }
+    fun searchUser(query: String) = githubUserRepository.searchUser(query)
 
     fun setUsers(users: Result<List<GithubUserHeader>>){
         _githubUsers.value = users
     }
+
     companion object {
         private const val TAG = "SearchViewModel"
     }
