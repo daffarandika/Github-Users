@@ -36,11 +36,12 @@
                     android:src="@drawable/ic_back" />
 
                 <ImageButton
+                    android:id="@+id/ibHeart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:layout_marginTop="5dp"
-                    android:src="@drawable/ic_favorite_large"
+                    android:src="@drawable/ic_favorite_border_large"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ivUser"
                     app:layout_constraintTop_toTopOf="parent" />

@@ -32,13 +32,15 @@ class FavoriteUserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val searchViewModelFactory = SearchViewModel(GithubUserRepository.getInstance(ApiConfig.getApiService(), GithubUserDatabase.getInstance(this).getDao())).createFactory()
         val searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
-        val adapter = GithubUserAdapter{ user ->
+        val adapter = GithubUserAdapter(onHeartClick = { user ->
 //            if (user.isFavorite) {
 //                searchViewModel.unsetUserAsFavorite(user)
 //            } else {
 //                searchViewModel.setUserAsFavorite(user)
 //            }
-        }
+        }, onItemClick = {
+
+        })
 //        searchViewModel.getAllFavoriteUser().observe(this) {res ->
 //            when (res) {
 //                is Result.Loading -> {}

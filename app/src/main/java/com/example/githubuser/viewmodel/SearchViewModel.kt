@@ -5,6 +5,7 @@ import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.githubuser.model.Result as Result
 
@@ -45,10 +46,21 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
                     name = user.name,
                     following = user.following,
                     followers = user.followers,
-                    bio = user.bio ?: "",
-                    isFavorite = false
+                    bio = user.bio,
+                    avatarUrl = user.avatarUrl
                 )
             )
+        }
+    }
+
+    fun unsetUserAsFavorite (login: String){
+        viewModelScope.launch {
+            githubUserRepository.unsetUserAsFavorite(login)
+        }
+    }
+    fun setUserAsFavorite (login: String){
+        viewModelScope.launch {
+            githubUserRepository.setUserAsFavorite(login)
         }
     }
 
@@ -56,9 +68,11 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
         viewModelScope.launch {
             try {
                 val users = ApiConfig.getApiService().searchUser(query).items.map { user ->
+                    val isUserFavorite = githubUserRepository.isUserFavorite(user.login)
                     GithubUserHeader(
                         login = user.login,
                         avatarUrl = user.avatarUrl,
+                        isFavorite = isUserFavorite
                     )
                 }
                 _githubUsers.value = Result.Success(users)

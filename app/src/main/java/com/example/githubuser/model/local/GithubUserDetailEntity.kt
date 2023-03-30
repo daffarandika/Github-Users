@@ -12,31 +12,12 @@ import kotlinx.parcelize.Parcelize
 data class GithubUserDetailEntity(
 
     @PrimaryKey(autoGenerate = false)
-    @field:SerializedName("login")
-    @field:ColumnInfo("login")
     var login: String,
-
-    @field:SerializedName("url")
-    @field:ColumnInfo("url")
     var url: String,
-
-    @field:SerializedName("name")
-    @field:ColumnInfo("name")
-    var name: String,
-
-    @field:SerializedName("followers")
-    @field:ColumnInfo("followers")
+    var name: String?,
     var followers: Int,
-
-    @field:SerializedName("following")
-    @field:ColumnInfo("following")
     var following: Int,
-
-    @field:SerializedName("bio")
-    @field:ColumnInfo("bio")
-    var bio: String,
-
-    @field:ColumnInfo("isFavorite")
-    var isFavorite: Boolean,
+    var bio: String?,
+    var avatarUrl: String
 
 ): Parcelable

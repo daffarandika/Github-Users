@@ -15,7 +15,8 @@ import com.example.githubuser.databinding.ItemGithubUserBinding
 import com.example.githubuser.model.local.GithubUserHeader
 
 class GithubUserAdapter(
-    private val onHeartClick: (GithubUserHeader) -> Unit
+    private val onHeartClick: (GithubUserHeader) -> Unit,
+    private val onItemClick: (GithubUserHeader) -> Unit
 ): ListAdapter<GithubUserHeader, GithubUserAdapter.GViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -48,10 +49,7 @@ class GithubUserAdapter(
                 .load(user.avatarUrl)
                 .into(binding.ivUser)
             itemView.setOnClickListener{
-                Intent(itemView.context, DetailActivity::class.java).apply {
-                    putExtra("username", user.login)
-                    itemView.context.startActivity(this)
-                }
+                onItemClick(user)
             }
         }
     }
@@ -68,11 +66,11 @@ class GithubUserAdapter(
         val user = getItem(position)
         holder.bind(user)
         val ibHeart = holder.binding.ibHeart
-//        if (user.isFavorite) {
-//            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite))
-//        } else {
-//            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite_border))
-//        }
+        if (user.isFavorite) {
+            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite))
+        } else {
+            ibHeart.setImageDrawable(ContextCompat.getDrawable(ibHeart.context, R.drawable.ic_favorite_border))
+        }
         ibHeart.setOnClickListener {
             onHeartClick(user)
             notifyDataSetChanged()

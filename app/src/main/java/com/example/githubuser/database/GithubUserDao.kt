@@ -14,13 +14,22 @@ interface GithubUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserDetail(githubUserDetailEntity: GithubUserDetailEntity)
 
+    @Query("UPDATE githubUserHeader SET isFavorite = 1 WHERE login = :login")
+    suspend fun setUserAsFavorite(login: String)
+
+    @Query("UPDATE githubUserHeader SET IsFavorite = 0 WHERE login = :login")
+    suspend fun unsetUserAsFavorite(login: String)
+
     @Query("SELECT * FROM GithubUserHeader")
     fun getUserHeaders(): LiveData<List<GithubUserHeader>>
 
-    @Query("SELECT * FROM GithubUserDetailEntity")
-    fun getUserDetails(): LiveData<List<GithubUserDetailEntity>>
+    @Query("SELECT * FROM GithubUserDetailEntity where login = :login")
+    fun getUserDetail(login: String): LiveData<GithubUserDetailEntity>
 
-    @Query("SELECT EXISTS (SELECT login FROM githubUserDetailEntity where login = :login and isFavorite = 1)")
+    @Query("SELECT avatarUrl FROM GithubUserHeader where login = :login")
+    fun getUserAvatarUrl(login: String): String
+
+    @Query("SELECT EXISTS (SELECT login FROM githubUserHeader where login = :login and isFavorite = 1)")
     suspend fun isUserFavorite(login: String): Boolean
 
 

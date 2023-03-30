@@ -26,6 +26,7 @@ import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.ActivityMainBinding
 import com.example.githubuser.model.GithubUser
 import com.example.githubuser.model.local.GithubUserDetailEntity
+import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.preferences.SettingPreference
 import com.example.githubuser.viewmodel.MainViewModel
@@ -86,9 +87,21 @@ class MainActivity : AppCompatActivity() {
             searchViewModel.setUsers(res)
         }
 
-        val adapter = GithubUserAdapter{ user ->
+        val adapter = GithubUserAdapter(onHeartClick = { user ->
             searchViewModel.insertUserDetail(user.login)
-        }
+            if (user.isFavorite) {
+                searchViewModel.unsetUserAsFavorite(user.login)
+            } else {
+                searchViewModel.setUserAsFavorite(user.login)
+            }
+        },
+        onItemClick = { user ->
+            searchViewModel.insertUserDetail(user.login)
+            Intent(this@MainActivity, DetailActivity::class.java).apply {
+                putExtra("username", user.login)
+                startActivity(this)
+            }
+        })
 
         searchViewModel.githubUsers.observe(this) {res ->
             when (res) {
@@ -102,7 +115,13 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "No users were found", Toast.LENGTH_SHORT).show()
                     }
                     binding.progressBar.visibility = View.GONE
-                    adapter.submitList(res.data)
+                    adapter.submitList(res.data.map{user ->
+                        GithubUserHeader(
+                            login = user.login,
+                            avatarUrl = user.avatarUrl,
+                            isFavorite = user.isFavorite
+                        )
+                    })
                 }
             }
         }

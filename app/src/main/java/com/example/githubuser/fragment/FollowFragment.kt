@@ -8,9 +8,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.adapter.GithubUserAdapter
+import com.example.githubuser.database.GithubUserDatabase
+import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.FragmentFollowBinding
-import com.example.githubuser.model.GithubUser
+import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.viewmodel.DetailViewModel
+import com.example.githubuser.viewmodel.createFactory
 
 class FollowFragment : Fragment() {
 
@@ -25,13 +28,15 @@ class FollowFragment : Fragment() {
     private lateinit var detailViewModel: DetailViewModel
     private var position: Int = -1
     private var username: String = ""
-    private var followers: List<GithubUser> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        detailViewModel = ViewModelProvider(this)[DetailViewModel::class.java]
+        val apiService = ApiConfig.getApiService()
+        val dao = GithubUserDatabase.getInstance(requireActivity()).getDao()
+        val detailViewModelFactory = DetailViewModel(GithubUserRepository.getInstance(apiService, dao)).createFactory()
+        detailViewModel = ViewModelProvider(this, detailViewModelFactory)[DetailViewModel::class.java]
         _binding = FragmentFollowBinding.inflate(inflater, container, false)
         arguments?.let {
             position = it.getInt(ARG_POS)
@@ -40,73 +45,19 @@ class FollowFragment : Fragment() {
         detailViewModel.isLoading.observe(viewLifecycleOwner){isLoading ->
             showLoading(isLoading)
         }
+        val adapter = GithubUserAdapter({}, {})
+        adapter.submitList(emptyList())
         if (position == 1) {
             detailViewModel.getFollowers(username)
-            detailViewModel.githubFollowers.observe(viewLifecycleOwner){ followers ->
+            detailViewModel.githubFollowers.observe(viewLifecycleOwner) { followers ->
                 binding.rvFollowers.apply {
-                    adapter = GithubUserAdapter{
-
-                    }.apply {
-//                        submitList(followers.map {user ->
-//                            GithubUserEntity(
-//                                login = user.login,
-//                                avatarUrl = user.avatarUrl,
-//                                url = user.url,
-//                                isFavorite = false,
-//                                bio = "",
-//                                followers = -1,
-//                                following = -1,
-//                                name = ""
-//                            )
-//                        })
-                    }
-                    layoutManager = LinearLayoutManager(requireActivity())
+                    this.adapter = adapter
                 }
             }
         } else {
-            detailViewModel.getFollowing(username)
-            detailViewModel.githubFollowings.observe(viewLifecycleOwner){ followings ->
                 binding.rvFollowers.apply {
-                    adapter = GithubUserAdapter{
-
-                    }.apply {
-//                        submitList(followings.map {user ->
-//                            GithubUserEntity(
-//                                login = user.login,
-//                                avatarUrl = user.avatarUrl,
-//                                url = user.url,
-//                                isFavorite = false,
-//                                bio = "",
-//                                followers = -1,
-//                                following = -1,
-//                                name = ""
-//                            )
-//                        })
-                    }
-                    layoutManager = LinearLayoutManager(requireActivity())
+                    this.adapter = adapter
                 }
-            }
-        }
-        binding.rvFollowers.apply {
-            binding.rvFollowers.apply {
-                adapter = GithubUserAdapter {
-
-                }.apply {
-//                    submitList(followers.map { user ->
-//                        GithubUserEntity(
-//                            login = user.login,
-//                            avatarUrl = user.avatarUrl,
-//                            url = user.url,
-//                            isFavorite = false,
-//                            bio = "",
-//                            followers = -1,
-//                            following = -1,
-//                            name = ""
-//                        )
-//                    })
-                }
-                layoutManager = LinearLayoutManager(requireActivity())
-            }
         }
         return binding.root
     }

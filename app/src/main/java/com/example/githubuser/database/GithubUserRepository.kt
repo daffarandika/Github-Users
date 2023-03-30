@@ -20,6 +20,7 @@ class GithubUserRepository private constructor(
                 GithubUserHeader(
                     login = user.login,
                     avatarUrl = user.avatarUrl,
+                    isFavorite = githubUserDao.isUserFavorite(user.login)
                 )
             }
             githubUserDao.insertUserHeaders(usersList)
@@ -37,6 +38,22 @@ class GithubUserRepository private constructor(
     }
 
     suspend fun isUserFavorite(login: String) = githubUserDao.isUserFavorite(login)
+
+    suspend fun setUserAsFavorite(login: String) = githubUserDao.setUserAsFavorite(login)
+
+    suspend fun unsetUserAsFavorite(login: String) = githubUserDao.unsetUserAsFavorite(login)
+
+    fun getUserDetail(login: String): LiveData<Result<GithubUserDetailEntity>> = liveData{
+        emit(Result.Loading)
+        try {
+            val localData: LiveData<Result<GithubUserDetailEntity>> = githubUserDao.getUserDetail(login).map { user ->
+                Result.Success(user)
+            }
+            emitSource(localData)
+        } catch (e: java.lang.Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
 
 //
 //    suspend fun isUserFavorite(login: String) = githubUserDao.isUserFavorite(login)
@@ -149,6 +166,7 @@ class GithubUserRepository private constructor(
 ////        emitSource(localData)
 ////    }
 //
+
     companion object {
         @Volatile
         private var INSTANCE: GithubUserRepository? = null
