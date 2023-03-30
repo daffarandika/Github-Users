@@ -30,15 +30,6 @@ import java.util.*
 
 class DetailActivity : AppCompatActivity() {
 
-    companion object {
-        @StringRes
-        private val  TAB_TITLES = intArrayOf(
-            R.string.followers,
-            R.string.following
-        )
-        private const val TAG = "DetailActivity"
-    }
-
     private lateinit var detailViewModel: DetailViewModel
     private lateinit var binding: ActivityDetailBinding
 
@@ -127,6 +118,15 @@ class DetailActivity : AppCompatActivity() {
 
     private fun showLoading(loading: Boolean) {
         binding.pbDetail.visibility = if (loading) View.VISIBLE else View.GONE
+    }
+
+    companion object {
+        @StringRes
+        private val  TAB_TITLES = intArrayOf(
+            R.string.followers,
+            R.string.following
+        )
+        private const val TAG = "DetailActivity"
     }
 
 }
