@@ -8,6 +8,7 @@ import com.example.githubuser.model.GithubUserDetail
 import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.networking.ApiConfig
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,6 +51,18 @@ class DetailViewModel(val repo: GithubUserRepository): ViewModel() {
     }
 
     suspend fun isUserFavorite(login: String): Boolean = repo.isUserFavorite(login)
+
+    fun unsetUserAsFavorite (login: String){
+        viewModelScope.launch {
+            repo.unsetUserAsFavorite(login)
+        }
+    }
+    fun setUserAsFavorite (login: String){
+        viewModelScope.launch {
+            repo.setUserAsFavorite(login)
+        }
+    }
+
 
     fun getFollowing(username: String) {
         val clientFollowings = ApiConfig.getApiService().getFollowings(username)

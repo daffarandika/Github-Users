@@ -110,51 +110,54 @@
                     app:layout_constraintTop_toBottomOf="@id/tvUsername" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_margin="10dp"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_marginTop="28dp"
                     android:background="@drawable/blue_rounded_corner"
                     android:backgroundTint="@color/gh_blue"
                     android:padding="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:paddingBottom="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.497"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvBio">
 
-                        <TextView
-                            android:id="@+id/tvFollowers"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="18sp"
-                            android:textColor="@color/white"
-                            app:layout_constraintStart_toStartOf="@id/tvfolo"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="@id/tvfolo"
-                            />
-                        <TextView
-                            android:id="@+id/tvFollowings"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
-                            app:layout_constraintStart_toStartOf="@id/tvfoli"
-                            app:layout_constraintEnd_toEndOf="@id/tvfoli"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/tvFollowers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="@id/tvfolo"
+                        app:layout_constraintStart_toStartOf="@id/tvfolo"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvFollowings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="@id/tvfoli"
+                        app:layout_constraintStart_toStartOf="@id/tvfoli"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
-                        <TextView
-                            android:layout_margin="5dp"
-                            android:id="@+id/tvfolo"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Followers"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvFollowers"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/tvfoli"
-                            />
+                    <TextView
+                        android:id="@+id/tvfolo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="Followers"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/tvfoli"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvFollowers" />
 
 
                     <TextView
@@ -167,8 +170,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/tvfolo"
-                        app:layout_constraintTop_toBottomOf="@+id/tvFollowings"
-                        />
+                        app:layout_constraintTop_toBottomOf="@+id/tvFollowings" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -189,6 +191,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">

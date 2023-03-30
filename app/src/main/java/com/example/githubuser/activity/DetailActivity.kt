@@ -22,6 +22,7 @@ import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.viewmodel.DetailViewModel
 import com.example.githubuser.viewmodel.createFactory
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
@@ -91,6 +92,20 @@ class DetailActivity : AppCompatActivity() {
                     Glide.with(this@DetailActivity)
                         .load(user.avatarUrl)
                         .into(binding.ivUser)
+
+                    binding.ibHeart.setOnClickListener {
+                        lifecycleScope.launch {
+                            if (detailViewModel.isUserFavorite(user.login)) {
+                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_border_large))
+                                detailViewModel.unsetUserAsFavorite(user.login)
+                                Toast.makeText(this@DetailActivity, "Removed user from favorites", Toast.LENGTH_SHORT).show()
+                            } else {
+                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_large))
+                                detailViewModel.setUserAsFavorite(user.login)
+                                Toast.makeText(this@DetailActivity, "Added user to favorites", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
             }
         }
