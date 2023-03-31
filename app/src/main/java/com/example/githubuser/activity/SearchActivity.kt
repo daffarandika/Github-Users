@@ -19,7 +19,7 @@ import com.example.githubuser.R
 import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.database.GithubUserDatabase
 import com.example.githubuser.database.GithubUserRepository
-import com.example.githubuser.databinding.ActivityMainBinding
+import com.example.githubuser.databinding.ActivitySearchBinding
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.preferences.SettingPreference
@@ -28,9 +28,9 @@ import com.example.githubuser.viewmodel.SearchViewModel
 import com.example.githubuser.viewmodel.createFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-class MainActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivitySearchBinding
     private lateinit var searchViewModel: SearchViewModel
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -40,9 +40,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.setting) {
-            Intent(this@MainActivity, SettingActivity::class.java).apply {
-                startActivity(this)
-            }
+            startActivity(Intent(
+                this@SearchActivity,
+                SettingActivity::class.java))
+        } else {
+            finish()
         }
         return true
     }
@@ -50,16 +52,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val db = GithubUserDatabase.getInstance(this@MainActivity)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        val db = GithubUserDatabase.getInstance(this@SearchActivity)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val userRepo = GithubUserRepository.getInstance(
             ApiConfig.getApiService(),
             db.getDao()
         )
-
-        binding.floatingActionButton.setOnClickListener {
-            startActivity(Intent(this, FavoriteUserActivity::class.java))
-        }
         val searchViewModelFactory = SearchViewModel(userRepo).createFactory()
         searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         setContentView(binding.root)
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         },
         onItemClick = { user ->
             searchViewModel.insertUserDetail(user.login)
-            Intent(this@MainActivity, DetailActivity::class.java).apply {
+            Intent(this@SearchActivity, DetailActivity::class.java).apply {
                 putExtra("username", user.login)
                 startActivity(this)
             }
@@ -100,11 +99,11 @@ class MainActivity : AppCompatActivity() {
                 is com.example.githubuser.model.Result.Loading -> binding.progressBar.visibility = View.VISIBLE
                 is com.example.githubuser.model.Result.Error -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this@MainActivity, res.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SearchActivity, res.message, Toast.LENGTH_SHORT).show()
                 }
                 is com.example.githubuser.model.Result.Success -> {
                     if (res.data.isEmpty()) {
-                        Toast.makeText(this@MainActivity, "No users were found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SearchActivity, "No users were found", Toast.LENGTH_SHORT).show()
                     }
                     binding.progressBar.visibility = View.GONE
                     adapter.submitList(res.data.map{user ->
@@ -119,20 +118,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.rv.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = LinearLayoutManager(this@SearchActivity)
             this.adapter = adapter
         }
 
         binding.svUsers.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String): Boolean {
-                searchViewModel.searchUser(query).observe(this@MainActivity) {res ->
+                searchViewModel.searchUser(query).observe(this@SearchActivity) { res ->
                     when (res) {
                         is com.example.githubuser.model.Result.Loading -> {}
                         is com.example.githubuser.model.Result.Error -> {}
                         is com.example.githubuser.model.Result.Success -> {
                             adapter.submitList(res.data)
                             binding.rv.apply {
-                                layoutManager = LinearLayoutManager(this@MainActivity)
+                                layoutManager = LinearLayoutManager(this@SearchActivity)
                                 this.adapter = adapter
                             }
                         }

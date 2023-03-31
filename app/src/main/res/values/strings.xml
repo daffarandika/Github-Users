@@ -8,4 +8,6 @@
     <string name="username">Username</string>
     <string name="setting">Setting</string>
     <string name="login">LOGIN</string>
+    <string name="search_for_user">Search for user</string>
+    <string name="no_fav">You don\'t have any user set as favorite</string>
 </resources>

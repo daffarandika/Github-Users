@@ -60,7 +60,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="5dp"
-                    android:src="@drawable/baseline_person_24"
+                    android:src="@drawable/ic_person"
                     app:layout_constraintBottom_toTopOf="@id/tvName"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
