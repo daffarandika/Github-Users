@@ -11,27 +11,12 @@ import kotlinx.coroutines.flow.map
 class SettingPreference private constructor(private val dataStore: DataStore<Preferences>) {
 
     private val THEME_KEY = booleanPreferencesKey("theme_setting")
-    private val IS_LOGGED_IN_KEY = booleanPreferencesKey("is_logged_in")
-    private val USERNAME = stringPreferencesKey("user_name")
 
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { pref ->
             pref[THEME_KEY] ?: false
         }
     }
-
-    fun isLoggedIn(): Flow<Boolean> {
-        return dataStore.data.map { pref ->
-            pref[IS_LOGGED_IN_KEY] ?: false
-        }
-    }
-
-    fun getUsername(): Flow<String?> {
-        return dataStore.data.map { pref ->
-            pref[USERNAME]
-        }
-    }
-
     suspend fun saveThemeSetting (isDarkModeActivated: Boolean) {
         dataStore.edit {pref ->
             pref[THEME_KEY] = isDarkModeActivated

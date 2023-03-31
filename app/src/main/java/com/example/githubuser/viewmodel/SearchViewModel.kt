@@ -16,12 +16,12 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> = _searchQuery
 
-    init {
-        getInitialUsers()
-    }
-    fun getInitialUsers(): LiveData<Result<List<GithubUserHeader>>> = githubUserRepository.getInitialUser()
+//    init {
+//        getInitialUsers()
+//    }
+//    fun getInitialUsers(): LiveData<Result<List<GithubUserHeader>>> = githubUserRepository.getInitialUser()
 
-    fun getAllFavoriteUser() = githubUserRepository.getFavoriteUsers()
+    fun getAllFavoriteUsers() = githubUserRepository.getFavoriteUsers()
 
 //    fun setUserAsFavorite(user: GithubUserDetailEntity){
 //        viewModelScope.launch {
@@ -63,7 +63,14 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
         }
     }
 
-    fun searchUser(query: String) = githubUserRepository.searchUser(query)
+    fun searchUser(query: String) {
+        viewModelScope.launch {
+            val users = githubUserRepository.searchUser(query)
+            githubUserRepository.insertUsers(users)
+        }
+    }
+
+    fun getAllHeaders() = githubUserRepository.getAllHeader()
 
     fun setUsers(users: Result<List<GithubUserHeader>>){
         _githubUsers.value = users

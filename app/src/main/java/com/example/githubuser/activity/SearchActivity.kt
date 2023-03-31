@@ -20,6 +20,7 @@ import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.database.GithubUserDatabase
 import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.ActivitySearchBinding
+import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.preferences.SettingPreference
@@ -74,10 +75,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        searchViewModel.getInitialUsers().observe(this){res->
-            searchViewModel.setUsers(res)
-        }
-
         val adapter = GithubUserAdapter(onHeartClick = { user ->
             searchViewModel.insertUserDetail(user.login)
             if (user.isFavorite) {
@@ -96,15 +93,12 @@ class SearchActivity : AppCompatActivity() {
 
         searchViewModel.githubUsers.observe(this) {res ->
             when (res) {
-                is com.example.githubuser.model.Result.Loading -> binding.progressBar.visibility = View.VISIBLE
-                is com.example.githubuser.model.Result.Error -> {
+                is Result.Loading -> binding.progressBar.visibility = View.VISIBLE
+                is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(this@SearchActivity, res.message, Toast.LENGTH_SHORT).show()
                 }
-                is com.example.githubuser.model.Result.Success -> {
-                    if (res.data.isEmpty()) {
-                        Toast.makeText(this@SearchActivity, "No users were found", Toast.LENGTH_SHORT).show()
-                    }
+                is Result.Success -> {
                     binding.progressBar.visibility = View.GONE
                     adapter.submitList(res.data.map{user ->
                         GithubUserHeader(
@@ -124,17 +118,13 @@ class SearchActivity : AppCompatActivity() {
 
         binding.svUsers.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String): Boolean {
-                searchViewModel.searchUser(query).observe(this@SearchActivity) { res ->
-                    when (res) {
-                        is com.example.githubuser.model.Result.Loading -> {}
-                        is com.example.githubuser.model.Result.Error -> {}
-                        is com.example.githubuser.model.Result.Success -> {
-                            adapter.submitList(res.data)
-                            binding.rv.apply {
-                                layoutManager = LinearLayoutManager(this@SearchActivity)
-                                this.adapter = adapter
-                            }
-                        }
+                searchViewModel.searchUser(query)
+                searchViewModel.getAllHeaders().observe(this@SearchActivity) {users ->
+                    searchViewModel.setUsers(users)
+                    if (users is Result.Success) {
+                        searchViewModel.setUsers(Result.Success(users.data.filter {user ->
+                            user.login.contains(query, ignoreCase = true)
+                        }))
                     }
                 }
                 return false

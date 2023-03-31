@@ -8,6 +8,7 @@ import com.example.githubuser.model.local.GithubUserHeader
 @Dao
 interface GithubUserDao {
 
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserHeaders(githubUserHeaders: List<GithubUserHeader>)
 

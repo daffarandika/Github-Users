@@ -56,7 +56,7 @@ class FavoriteUserActivity : AppCompatActivity() {
                     putExtra("username", user.login)
             })
         })
-        searchViewModel.getAllFavoriteUser().observe(this) {res ->
+        searchViewModel.getAllFavoriteUsers().observe(this) {res ->
             when (res) {
                 is Result.Loading -> {
                     binding.tvNoUser.visibility = View.INVISIBLE
