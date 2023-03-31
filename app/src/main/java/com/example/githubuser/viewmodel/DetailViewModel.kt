@@ -7,47 +7,34 @@ import com.example.githubuser.model.GithubUser
 import com.example.githubuser.model.GithubUserDetail
 import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserDetailEntity
+import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel(val repo: GithubUserRepository): ViewModel() {
-    var _githubUser = MutableLiveData<GithubUserDetailEntity>()
+class DetailViewModel(private val repo: GithubUserRepository): ViewModel() {
+
+    private var _githubUser = MutableLiveData<GithubUserDetailEntity>()
     val githubUser: LiveData<GithubUserDetailEntity> = _githubUser
 
-    var _githubFollowers = MutableLiveData<List<GithubUser>>()
-    val githubFollowers: LiveData<List<GithubUser>> = _githubFollowers
+    private var _githubFollowers = MutableLiveData<Result<List<GithubUserHeader>>>()
+    val githubFollowers: LiveData<Result<List<GithubUserHeader>>> = _githubFollowers
 
-    var _githubFollowings = MutableLiveData<List<GithubUser>>()
-    val githubFollowings: LiveData<List<GithubUser>> = _githubFollowings
-
-    val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
+    private var _githubFollowings = MutableLiveData<Result<List<GithubUserHeader>>>()
+    val githubFollowings: LiveData<Result<List<GithubUserHeader>>> = _githubFollowings
 
     fun getFollowers(username: String) {
-        val clientFollowers = ApiConfig.getApiService().getFollowers(username)
-        clientFollowers.enqueue(object: Callback<List<GithubUser>> {
-            override fun onResponse(
-                call: Call<List<GithubUser>>,
-                response: Response<List<GithubUser>>,
-            ) {
-                _isLoading.value = true
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null){
-                        _githubFollowers.value = responseBody!!
-                        _isLoading.value = false
-                    } else Log.e(TAG, "onResponse: ${response.message()}")
-                } else Log.e(TAG, "onResponse: ${response.message()}")
-            }
-
-            override fun onFailure(call: Call<List<GithubUser>>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
+        viewModelScope.launch {
+            _githubFollowers.value = Result.Success(ApiConfig.getApiService().getFollowers(username).map { user ->
+                GithubUserHeader(
+                    login = user.login,
+                    avatarUrl = user.avatarUrl,
+                    isFavorite = isUserFavorite(user.login)
+                )
+            })
+        }
     }
 
     suspend fun isUserFavorite(login: String): Boolean = repo.isUserFavorite(login)
@@ -63,32 +50,19 @@ class DetailViewModel(val repo: GithubUserRepository): ViewModel() {
         }
     }
 
-
     fun getFollowing(username: String) {
-        val clientFollowings = ApiConfig.getApiService().getFollowings(username)
-        clientFollowings.enqueue(object: Callback<List<GithubUser>> {
-            override fun onResponse(
-                call: Call<List<GithubUser>>,
-                response: Response<List<GithubUser>>,
-            ) {
-                _isLoading.value = true
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null){
-                        _githubFollowings.value = responseBody!!
-                        _isLoading.value = false
-                    } else Log.e(TAG, "onResponse: ${response.message()}")
-                } else Log.e(TAG, "onResponse: ${response.message()}")
-            }
-
-            override fun onFailure(call: Call<List<GithubUser>>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
-            }
-        })
+        viewModelScope.launch {
+            _githubFollowers.value = Result.Success(ApiConfig.getApiService().getFollowers(username).map { user ->
+                GithubUserHeader(
+                    login = user.login,
+                    avatarUrl = user.avatarUrl,
+                    isFavorite = isUserFavorite(user.login)
+                )
+            })
+        }
     }
 
-    fun getUserDetail(login: String): LiveData<com.example.githubuser.model.Result<GithubUserDetailEntity>> = liveData {
+    fun getUserDetail(login: String): LiveData<Result<GithubUserDetailEntity>> = liveData {
         emit(Result.Loading)
         try {
             val user = ApiConfig.getApiService().getUserDetail(login)

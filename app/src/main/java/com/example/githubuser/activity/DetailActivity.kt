@@ -101,10 +101,6 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        detailViewModel.isLoading.observe(this){isLoading ->
-            showLoading(isLoading)
-        }
-
         val sectionsPageAdapter = SectionsPageAdapter(this, username)
         val viewPager = findViewById<ViewPager2>(R.id.vp2)
         viewPager.adapter = sectionsPageAdapter

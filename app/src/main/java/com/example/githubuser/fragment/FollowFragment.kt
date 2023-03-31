@@ -1,16 +1,19 @@
 package com.example.githubuser.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.githubuser.adapter.GithubFollowAdapter
 import com.example.githubuser.adapter.GithubUserAdapter
 import com.example.githubuser.database.GithubUserDatabase
 import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.FragmentFollowBinding
+import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.viewmodel.DetailViewModel
 import com.example.githubuser.viewmodel.createFactory
@@ -42,22 +45,25 @@ class FollowFragment : Fragment() {
             position = it.getInt(ARG_POS)
             username = it.getString(ARG_USERNAME).toString()
         }
-        detailViewModel.isLoading.observe(viewLifecycleOwner){isLoading ->
-            showLoading(isLoading)
-        }
-        val adapter = GithubUserAdapter({}, {})
-        adapter.submitList(emptyList())
         if (position == 1) {
             detailViewModel.getFollowers(username)
             detailViewModel.githubFollowers.observe(viewLifecycleOwner) { followers ->
-                binding.rvFollowers.apply {
-                    this.adapter = adapter
+                if (followers is com.example.githubuser.model.Result.Success) {
+                    Log.e(TAG, "onCreateView: $followers")
+                    binding.rvFollowers.apply {
+                        this.adapter = GithubFollowAdapter(followers.data)
+                    }
                 }
             }
         } else {
-                binding.rvFollowers.apply {
-                    this.adapter = adapter
+            detailViewModel.githubFollowings.observe(viewLifecycleOwner) { followings ->
+                if (followings is com.example.githubuser.model.Result.Success) {
+                    Log.e(TAG, "onCreateView: $followings")
+                    binding.rvFollowers.apply {
+                        this.adapter = GithubFollowAdapter(followings.data)
+                    }
                 }
+            }
         }
         return binding.root
     }
@@ -66,10 +72,5 @@ class FollowFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    private fun showLoading(isLoading: Boolean) {
-        binding.pbFollow.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
 
 }

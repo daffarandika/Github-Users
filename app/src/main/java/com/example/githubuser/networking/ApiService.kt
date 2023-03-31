@@ -19,12 +19,12 @@ interface ApiService {
     ): GithubUserDetail
 
     @GET("users/{username}/followers")
-    fun getFollowers(
+    suspend fun getFollowers(
         @Path("username") username: String
-    ): Call<List<GithubUser>>
+    ): List<GithubUser>
 
     @GET("users/{username}/following")
-    fun getFollowings(
+    suspend fun getFollowings(
         @Path("username") username: String
-    ): Call<List<GithubUser>>
+    ): List<GithubUser>
 }

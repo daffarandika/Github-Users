@@ -72,6 +72,10 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
 
     fun getAllHeaders() = githubUserRepository.getAllHeader()
 
+    fun setSearchQuery(query: String){
+        _searchQuery.value = query
+    }
+
     fun setUsers(users: Result<List<GithubUserHeader>>){
         _githubUsers.value = users
     }

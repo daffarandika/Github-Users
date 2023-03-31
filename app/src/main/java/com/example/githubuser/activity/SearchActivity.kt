@@ -131,7 +131,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(query: String): Boolean {
-                // TODO: add this to viewmodel
+                searchViewModel.setSearchQuery(query)
                 return false
             }
         })
