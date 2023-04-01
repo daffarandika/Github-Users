@@ -1,5 +1,6 @@
 package com.example.githubuser.activity
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +24,11 @@ import com.example.githubuser.model.Result
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.viewmodel.SearchViewModel
 import com.example.githubuser.viewmodel.createFactory
+import androidx.datastore.preferences.core.Preferences
+import com.example.githubuser.preferences.SettingPreference
+import com.example.githubuser.viewmodel.MainViewModel
 
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 class FavoriteUserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFavoriteUserBinding
 
@@ -41,6 +49,16 @@ class FavoriteUserActivity : AppCompatActivity() {
         binding = ActivityFavoriteUserBinding.inflate(layoutInflater)
         supportActionBar?.title = "Favorite Users"
         setContentView(binding.root)
+        val pref = SettingPreference.getInstance(dataStore)
+        val mainViewModelFactory = MainViewModel(pref).createFactory()
+        val mainViewModel = ViewModelProvider(this, mainViewModelFactory)[MainViewModel::class.java]
+        mainViewModel.getThemeSetting().observe(this) {isDarkMode ->
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
         val searchViewModelFactory = SearchViewModel(GithubUserRepository.getInstance(ApiConfig.getApiService(), GithubUserDatabase.getInstance(this).getDao())).createFactory()
         val searchViewModel = ViewModelProvider(this, searchViewModelFactory)[SearchViewModel::class.java]
         val adapter = GithubUserAdapter(onHeartClick = { user ->
