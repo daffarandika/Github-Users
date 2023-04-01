@@ -23,8 +23,8 @@ class GithubFollowAdapter(
 ): RecyclerView.Adapter<GithubFollowAdapter.GViewHolder>() {
 
     inner class GViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val tvUsername = view.findViewById<TextView>(R.id.tvUsername)
-        val ivUser = view.findViewById<ImageView>(R.id.ivUser)
+        val tvUsername: TextView = view.findViewById(R.id.tvUsername)
+        val ivUser: ImageView = view.findViewById(R.id.ivUser)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GViewHolder {
@@ -42,6 +42,12 @@ class GithubFollowAdapter(
     override fun onBindViewHolder(holder: GViewHolder, position: Int) {
         val user = users[position]
         holder.tvUsername.text = user.login
+        holder.itemView.setOnClickListener {
+            Intent(holder.itemView.context, DetailActivity::class.java).apply {
+                putExtra("username", user.login)
+                holder.itemView.context.startActivity(this)
+            }
+        }
         Glide.with(holder.itemView)
             .load(user.avatarUrl)
             .into(holder.ivUser)

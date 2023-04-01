@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.adapter.GithubFollowAdapter
@@ -19,12 +20,6 @@ import com.example.githubuser.viewmodel.DetailViewModel
 import com.example.githubuser.viewmodel.createFactory
 
 class FollowFragment : Fragment() {
-
-    companion object {
-        const val ARG_POS = "position"
-        const val ARG_USERNAME = "username"
-        private const val TAG = "FollowFragment"
-    }
 
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding!!
@@ -45,22 +40,45 @@ class FollowFragment : Fragment() {
             position = it.getInt(ARG_POS)
             username = it.getString(ARG_USERNAME).toString()
         }
+        detailViewModel.getFollowers(username)
+        detailViewModel.getFollowing(username)
         if (position == 1) {
-            detailViewModel.getFollowers(username)
-            detailViewModel.githubFollowers.observe(viewLifecycleOwner) { followers ->
-                if (followers is com.example.githubuser.model.Result.Success) {
-                    Log.e(TAG, "onCreateView: $followers")
-                    binding.rvFollowers.apply {
-                        this.adapter = GithubFollowAdapter(followers.data)
-                    }
-                }
+            detailViewModel.githubFollowers.observe(viewLifecycleOwner) { res ->
+                 when (res) {
+                     is com.example.githubuser.model.Result.Success -> {
+                         binding.pbFollow.visibility = View.GONE
+                         binding.rvFollowers.apply {
+                             this.adapter = GithubFollowAdapter(res.data)
+                             this.layoutManager = LinearLayoutManager(requireActivity())
+                         }
+                     }
+                     is com.example.githubuser.model.Result.Error -> {
+                         binding.pbFollow.visibility = View.GONE
+                         Toast.makeText(requireActivity(), res.message, Toast.LENGTH_SHORT).show()
+                     }
+                     else -> {
+                         binding.pbFollow.visibility = View.VISIBLE
+                         Toast.makeText(requireActivity(), "cok", Toast.LENGTH_SHORT).show()
+                     }
+                 }
             }
         } else {
-            detailViewModel.githubFollowings.observe(viewLifecycleOwner) { followings ->
-                if (followings is com.example.githubuser.model.Result.Success) {
-                    Log.e(TAG, "onCreateView: $followings")
-                    binding.rvFollowers.apply {
-                        this.adapter = GithubFollowAdapter(followings.data)
+            detailViewModel.githubFollowings.observe(viewLifecycleOwner) { res ->
+                when (res) {
+                    is com.example.githubuser.model.Result.Success -> {
+                        binding.pbFollow.visibility = View.GONE
+                        binding.rvFollowers.apply {
+                            this.adapter = GithubFollowAdapter(res.data)
+                            this.layoutManager = LinearLayoutManager(requireActivity())
+                        }
+                    }
+                    is com.example.githubuser.model.Result.Error -> {
+                        binding.pbFollow.visibility = View.GONE
+                        Toast.makeText(requireActivity(), res.message, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        binding.pbFollow.visibility = View.VISIBLE
+                        Toast.makeText(requireActivity(), "cok", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -72,5 +90,12 @@ class FollowFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    companion object {
+        const val ARG_POS = "position"
+        const val ARG_USERNAME = "username"
+        private const val TAG = "FollowFragment"
+    }
+
 
 }

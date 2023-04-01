@@ -52,7 +52,7 @@ class DetailViewModel(private val repo: GithubUserRepository): ViewModel() {
 
     fun getFollowing(username: String) {
         viewModelScope.launch {
-            _githubFollowers.value = Result.Success(ApiConfig.getApiService().getFollowers(username).map { user ->
+            _githubFollowings.value = Result.Success(ApiConfig.getApiService().getFollowings(username).map { user ->
                 GithubUserHeader(
                     login = user.login,
                     avatarUrl = user.avatarUrl,

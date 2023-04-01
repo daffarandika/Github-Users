@@ -75,6 +75,8 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+        binding.progressBar.visibility = View.GONE
+
         val adapter = GithubUserAdapter(onHeartClick = { user ->
             searchViewModel.insertUserDetail(user.login)
             if (user.isFavorite) {
