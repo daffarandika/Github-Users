@@ -6,7 +6,6 @@ import androidx.lifecycle.map
 import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
-import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.networking.ApiService
 
 class GithubUserRepository private constructor(

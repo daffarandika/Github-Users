@@ -2,7 +2,6 @@ package com.example.githubuser.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.githubuser.preferences.SettingPreference
 
 fun <T: ViewModel> T.createFactory(): ViewModelProvider.Factory {
     val viewModel = this

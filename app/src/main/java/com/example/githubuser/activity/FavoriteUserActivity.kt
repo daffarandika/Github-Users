@@ -2,17 +2,16 @@ package com.example.githubuser.activity
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.R
@@ -22,11 +21,10 @@ import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.ActivityFavoriteUserBinding
 import com.example.githubuser.model.Result
 import com.example.githubuser.networking.ApiConfig
-import com.example.githubuser.viewmodel.SearchViewModel
-import com.example.githubuser.viewmodel.createFactory
-import androidx.datastore.preferences.core.Preferences
 import com.example.githubuser.preferences.SettingPreference
 import com.example.githubuser.viewmodel.MainViewModel
+import com.example.githubuser.viewmodel.SearchViewModel
+import com.example.githubuser.viewmodel.createFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 class FavoriteUserActivity : AppCompatActivity() {

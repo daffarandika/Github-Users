@@ -1,12 +1,10 @@
 package com.example.githubuser.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -17,16 +15,12 @@ import com.example.githubuser.adapter.SectionsPageAdapter
 import com.example.githubuser.database.GithubUserDatabase
 import com.example.githubuser.database.GithubUserRepository
 import com.example.githubuser.databinding.ActivityDetailBinding
-import com.example.githubuser.model.GithubUserDetail
-import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.networking.ApiConfig
 import com.example.githubuser.viewmodel.DetailViewModel
 import com.example.githubuser.viewmodel.createFactory
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
-import java.util.*
 
 class DetailActivity : AppCompatActivity() {
 
@@ -72,8 +66,16 @@ class DetailActivity : AppCompatActivity() {
                     lifecycleScope.launch {
                         if (detailViewModel.isUserFavorite(user.login)) {
                             binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_large))
+                            binding.ibHeart.setOnClickListener {
+                                detailViewModel.unsetUserAsFavorite(user.login)
+                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_border_large))
+                            }
                         } else {
                             binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_border_large))
+                            binding.ibHeart.setOnClickListener {
+                                detailViewModel.setUserAsFavorite(user.login)
+                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_large))
+                            }
                         }
                     }
 

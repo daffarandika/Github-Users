@@ -1,21 +1,15 @@
 package com.example.githubuser.adapter
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.githubuser.activity.DetailActivity
 import com.example.githubuser.R
-import com.example.githubuser.databinding.ItemGithubUserBinding
-import com.example.githubuser.databinding.ItemGithubUserFollowBinding
+import com.example.githubuser.activity.DetailActivity
 import com.example.githubuser.model.local.GithubUserHeader
 
 class GithubFollowAdapter(

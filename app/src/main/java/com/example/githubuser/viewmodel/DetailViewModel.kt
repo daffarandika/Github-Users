@@ -1,18 +1,12 @@
 package com.example.githubuser.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.githubuser.database.GithubUserRepository
-import com.example.githubuser.model.GithubUser
-import com.example.githubuser.model.GithubUserDetail
 import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class DetailViewModel(private val repo: GithubUserRepository): ViewModel() {
 

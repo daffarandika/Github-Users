@@ -1,12 +1,15 @@
 package com.example.githubuser.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.githubuser.database.GithubUserRepository
+import com.example.githubuser.model.Result
 import com.example.githubuser.model.local.GithubUserDetailEntity
 import com.example.githubuser.model.local.GithubUserHeader
 import com.example.githubuser.networking.ApiConfig
 import kotlinx.coroutines.launch
-import com.example.githubuser.model.Result as Result
 
 class SearchViewModel(private val githubUserRepository: GithubUserRepository): ViewModel() {
     
@@ -16,24 +19,7 @@ class SearchViewModel(private val githubUserRepository: GithubUserRepository): V
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> = _searchQuery
 
-//    init {
-//        getInitialUsers()
-//    }
-//    fun getInitialUsers(): LiveData<Result<List<GithubUserHeader>>> = githubUserRepository.getInitialUser()
-
     fun getAllFavoriteUsers() = githubUserRepository.getFavoriteUsers()
-
-//    fun setUserAsFavorite(user: GithubUserDetailEntity){
-//        viewModelScope.launch {
-//            githubUserRepository.setUserFavorite(user, true)
-//        }
-//    }
-//
-//    fun unsetUserAsFavorite(user: GithubUserEntity){
-//        viewModelScope.launch {
-//            githubUserRepository.setUserFavorite(user, false)
-//        }
-//    }
 
     fun insertUserDetail(login: String) {
         viewModelScope.launch {

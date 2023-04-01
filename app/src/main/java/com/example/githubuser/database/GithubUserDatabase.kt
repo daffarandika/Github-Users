@@ -4,14 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.githubuser.model.local.*
+import com.example.githubuser.model.local.GithubUserDetailEntity
+import com.example.githubuser.model.local.GithubUserHeader
 
 @Database(
     entities = [
         GithubUserDetailEntity::class,
-        GithubUserHeader::class,
-        GithubUserFollowers::class,
-        GithubUserFollowing::class
+        GithubUserHeader::class
     ],
     version = 1
 )

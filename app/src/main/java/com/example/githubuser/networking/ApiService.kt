@@ -1,7 +1,6 @@
 package com.example.githubuser.networking
 
 import com.example.githubuser.model.*
-import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
