@@ -66,15 +66,18 @@ class DetailActivity : AppCompatActivity() {
                     lifecycleScope.launch {
                         if (detailViewModel.isUserFavorite(user.login)) {
                             binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_large))
-                            binding.ibHeart.setOnClickListener {
-                                detailViewModel.unsetUserAsFavorite(user.login)
-                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_border_large))
-                            }
                         } else {
                             binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_border_large))
-                            binding.ibHeart.setOnClickListener {
-                                detailViewModel.setUserAsFavorite(user.login)
-                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_large))
+                        }
+                    }
+                    binding.ibHeart.setOnClickListener {
+                        lifecycleScope.launch {
+                            if (detailViewModel.isUserFavorite(user.login)) {
+                                detailViewModel.unsetUserAsFavorite(user.login)
+                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_border_large))
+                            } else {
+                                detailViewModel.unsetUserAsFavorite(user.login)
+                                binding.ibHeart.setImageDrawable(ContextCompat.getDrawable(this@DetailActivity, R.drawable.ic_favorite_border_large))
                             }
                         }
                     }
